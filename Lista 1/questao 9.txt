@@ -1,9 +1,9 @@
 a) É possível implementar essa função utilizando a Busca Universal.
 É uma função que faz uma iteração dinâmica entre todos os programas, até um deles retornar um
 array de n inteiros, que pode ser verificado como a resposta correta com um algorítimo de 
-multiplicação iterativa no array. Caso um programa retorne uma resposta errada ou encerre, o 
-mesmo é descartado e a busca continua. Caso um programa retorne uma resposta correta, a função
-retorna esse array.
+multiplicação iterativa no array e um algorítimo de teste de primalidade. Caso um programa retorne
+uma resposta errada ou encerre, o mesmo é descartado e a busca continua. Caso um programa retorne 
+uma resposta correta, a função retorna esse array.
 
 Descrição da função:
 1) Definir um interpretador de Python
