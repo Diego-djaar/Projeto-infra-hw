@@ -18,6 +18,7 @@ Descrição da função:
         Se o programa retornar algum erro, remover da lista
         Se o programa retornar, checar se é um array com a fatoração desejada
             Se for, encerrar todos os programas da lista e retornar esse array
+            Senão, remover da lista
 
 
 
