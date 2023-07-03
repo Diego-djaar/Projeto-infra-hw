@@ -1,0 +1,20 @@
+a) É possível implementar essa função utilizando a Busca Universal.
+É uma função que faz uma iteração dinâmica entre todos os programas, até um deles retornar um
+array de n inteiros, que pode ser verificado como a resposta correta com um algorítimo de 
+multiplicação iterativa no array. Caso um programa retorne uma resposta errada, o mesmo é 
+descartado e a busca continua. Caso um programa retorne uma resposta correta, a função
+retorna esse array
+
+b) Ela está contida em P, pois, se um algorítimo de fatoração contido em P tem complexidade 
+O(n^y) ou menor, então a função terá complexidade até O(n^(y+1)), logo, também em P.
+
+Devido a complexidade do algorítimo, é extremamente difícil uma implementação em MIPS ou
+dizer qual é seu big O.
+
+Referências:
+"The most powerful (and useless) algorithm" de polylog 
+https://www.youtube.com/watch?v=9ONm1od1QZo acesso em 2/7/2023
+
+Implementação em python: 
+https://github.com/polylog-cs/universal-search/blob/main/code/universal_search.py
+
