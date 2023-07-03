@@ -1,12 +1,29 @@
 a) É possível implementar essa função utilizando a Busca Universal.
 É uma função que faz uma iteração dinâmica entre todos os programas, até um deles retornar um
 array de n inteiros, que pode ser verificado como a resposta correta com um algorítimo de 
-multiplicação iterativa no array. Caso um programa retorne uma resposta errada, o mesmo é 
-descartado e a busca continua. Caso um programa retorne uma resposta correta, a função
-retorna esse array
+multiplicação iterativa no array. Caso um programa retorne uma resposta errada ou encerre, o 
+mesmo é descartado e a busca continua. Caso um programa retorne uma resposta correta, a função
+retorna esse array.
+
+Descrição da função:
+1) Definir um interpretador de Python
+2) Criar uma lista de programas Python
+3) Iterar sobre todas as strings em ordem crescente de número de caracteres e ordem lexicográfica 
+["a","b","c",...,"aa","ab",...,"aaa",...]
+    A string atual deve ser interpretada no interpretador de Python
+        Se o interpretador retornar syntax error, fazer nada
+        Senão, adicionar o programa python resultante à lista
+
+    Então, executar uma linha de cada programa da lista
+        Se o programa retornar algum erro, remover da lista
+        Se o programa retornar, checar se é um array com a fatoração desejada
+            Se for, encerrar todos os programas da lista e retornar esse array
+
+
+
 
 b) Ela está contida em P, pois, se um algorítimo de fatoração contido em P tem complexidade 
-O(n^y) ou menor, então a função terá complexidade até O(n^y), logo, também em P.
+O(n^y) ou menor, então a função terá complexidade até O(n^(2y)), logo, também em P.
 
 Devido a complexidade do algorítimo, é extremamente difícil uma implementação em MIPS ou
 dizer qual é seu big O.
@@ -19,4 +36,5 @@ https://www.youtube.com/watch?v=9ONm1od1QZo acesso em 2/7/2023
 
 Implementação em python: 
 https://github.com/polylog-cs/universal-search/blob/main/code/universal_search.py
+acesso em 2/7/2023
 
