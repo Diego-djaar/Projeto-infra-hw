@@ -11,14 +11,14 @@ module update_UC(
         always @(*)
         begin
             update_UC_out = 1'b0; // Não sei se essa linha é necessária
-        if (UC_control == 1'b1) begin
-            case (UC_op)
-                2'b00: update_UC_out = (igual) ? 1'b1 : 1'b0; // BEQ
-                2'b01: update_UC_out = (igual) ? 1'b0 : 1'b1; // BNE
-                2'b10: update_UC_out = (maior) ? 1'b0 : 1'b1; // BLE
-                2'b11: update_UC_out = (maior) ? 1'b1 : 1'b0; // BGT
-            endcase
-        end
+            if (UC_control == 1'b1) begin
+                case (UC_op)
+                    2'b00: update_UC_out = (igual) ? 1'b1 : 1'b0; // BEQ
+                    2'b01: update_UC_out = (igual) ? 1'b0 : 1'b1; // BNE
+                    2'b10: update_UC_out = (maior) ? 1'b0 : 1'b1; // BLE
+                    2'b11: update_UC_out = (maior) ? 1'b1 : 1'b0; // BGT
+                endcase
+            end
         end
 
 endmodule
