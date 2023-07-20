@@ -16,6 +16,8 @@ module logic_unit(
     wire [2:0] SHIFTER_control;
     wire M_SHIFTER;
     wire [2:0] M_ALUOut_control;
+    wire UC_control;
+    wire [1:0] UC_op;
 
     // Data wires
     wire [31:0] ALU_out;
@@ -74,7 +76,13 @@ module logic_unit(
         EXTEND_out
     );
 
-
+    update_UC update_UC_(
+        Gt,
+        Eq,
+        UC_control,
+        UC_op,
+        Update_UC
+    );
 
 
 endmodule
