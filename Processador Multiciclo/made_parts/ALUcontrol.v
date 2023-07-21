@@ -2,12 +2,12 @@ module ALUcontrol(
     input wire clk,
     input wire reset,
     input wire ALUOp,
-    output wire [2:0] ALU_control;
-    output wire [2:0] SHIFTER_control;
-    output wire M_SHIFTER;
-    output wire [1:0] M_ALUOut_control;
-    output wire UC_control;
-    output wire [1:0] UC_op;
+    output wire [2:0] ALU_control,
+    output wire [2:0] SHIFTER_control,
+    output wire M_SHIFTER,
+    output wire [1:0] M_ALUOut_control,
+    output wire UC_control,
+    output wire [1:0] UC_op
 );
     // Como tudo aqui vai ser executado em um ciclo não é necessário usar um contador
 
