@@ -29,6 +29,8 @@ module ALUcontrol(
     parameter BGT = 4'1110;
     parameter LUI = 4'1111;
 
+    reg STATE; // Indica se a operação é na ULA ou é uma operação de SHIFT
+
     always @(posedge clk) begin
         if (reset == 1'b1) begin
             ALU_control = 3'b000;
