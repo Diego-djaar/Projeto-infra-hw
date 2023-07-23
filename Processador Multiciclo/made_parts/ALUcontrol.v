@@ -16,7 +16,7 @@ module ALUcontrol(
     parameter ADD = 4'b0001;
     parameter SUB = 4'b0010;
     parameter AND = 4'b0011;
-    parameter PASS_B  = 4'b0100;
+    parameter PASS_B = 4'b0100; // Tentar alterar pra usar a ULAAUX para preservar um ciclo
     parameter SHIFT_L1 = 4'b0101;
     parameter SHIFT_L2 = 4'b0110;
     parameter SHIFT_R = 4'b0111;
@@ -29,7 +29,7 @@ module ALUcontrol(
     parameter BGT = 4'1110;
     parameter LUI = 4'1111;
 
-    reg STATE; // Indica se a operação é na ULA ou é uma operação de SHIFT
+    reg COUNTER = 1'b0; // Conta até um ciclo pra as operações de shift (que precisam primeiro do primeiro ciclo pro LOAD)
 
     always @(posedge clk) begin
         if (reset == 1'b1) begin
@@ -39,121 +39,161 @@ module ALUcontrol(
             M_ALUOut_control = 3'b00;
             UC_control = 1'b0;
             UC_op = 2'b00;
-        end
-        else begin
-            if (ALUOp == NO_OP) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b01;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == ADD) begin
-                ALU_control = 3'b001;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b01;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SUB) begin
-                ALU_control = 3'b010;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b01;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == AND) begin
-                ALU_control = 3'b011;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b01;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == PASS_B) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SHIFT_L1) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b010;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SHIFT_L2) begin // ALUaux
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b010;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SHIFT_R) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b011;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SHIFT_RA1) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b100;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SHIFT_RA2) begin // ALUaux
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b010;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == SLTI) begin
-                ALU_control = 3'b111;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b11;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end else if (ALUOp == BEQ) begin
-                ALU_control = 3'b111;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b11;
-                UC_control = 1'b1;
-                UC_op = 2'b00;
-            end else if (ALUOp == BNE) begin
-                ALU_control = 3'b111;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b11;
-                UC_control = 1'b1;
-                UC_op = 2'b01;
-            end else if (ALUOp == BLE) begin
-                ALU_control = 3'b111;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b11;
-                UC_control = 1'b1;
-                UC_op = 2'b10;
-            end else if (ALUOp == BGT) begin
-                ALU_control = 3'b111;
-                SHIFTER_control = 3'b000;
-                M_SHIFTER = 1'b0;
-                M_ALUOut_control = 2'b11;
-                UC_control = 1'b1;
-                UC_op = 2'b11;
-            end else if (ALUOp == LUI) begin
-                ALU_control = 3'b000;
-                SHIFTER_control = 3'b010; // Shift left
-                M_SHIFTER = 1'b1;
-                M_ALUOut_control = 2'b10;
-                UC_control = 1'b0;
-                UC_op = 2'b00;
-            end 
+        end else begin
+            case (ALUOp)
+                NO_OP : begin
+                    ALU_control = 3'b000;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b01;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end 
+                ADD : begin
+                    ALU_control = 3'b001;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b01;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end 
+                SUB : begin
+                    ALU_control = 3'b010;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b01;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end 
+                AND : begin
+                    ALU_control = 3'b011;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b01;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end
+                PASS_B : begin
+                    ALU_control = 3'b000;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b10;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end
+                SHIFT_L1 : begin
+                    if (COUNTER == 1'b0) begin
+                        ALU_control = 3'b000;
+                        SHIFTER_control = 3'b001; // load no shifter
+                        M_SHIFTER = 1'b0;
+                        M_ALUOut_control = 2'b10;
+                        UC_control = 1'b0;
+                        UC_op = 2'b00;
+                        COUNTER = 1'b1;
+                    end else begin
+                        SHIFTER_control = 3'b010;
+                        COUNTER = 1'b0;
+                    end
+                end
+                SHIFT_L2 : begin // ALUaux
+                    ALU_control = 3'b000;
+                    SHIFTER_control = 3'b010;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b10;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end
+                SHIFT_R : begin
+                    if (COUNTER == 1'b0) begin
+                        ALU_control = 3'b000;
+                        SHIFTER_control = 3'b001; // load no shifter
+                        M_SHIFTER = 1'b0;
+                        M_ALUOut_control = 2'b10;
+                        UC_control = 1'b0;
+                        UC_op = 2'b00;
+                        COUNTER = 1'b1;
+                    end else begin
+                        SHIFTER_control = 3'b011;
+                        COUNTER = 1'b0;
+                    end
+                end
+                SHIFT_RA1 : begin
+                    if (COUNTER == 1'b0) begin
+                        ALU_control = 3'b000;
+                        SHIFTER_control = 3'b001; // load no shifter
+                        M_SHIFTER = 1'b0;
+                        M_ALUOut_control = 2'b10;
+                        UC_control = 1'b0;
+                        UC_op = 2'b00;
+                        COUNTER = 1'b1;
+                    end else begin
+                        SHIFTER_control = 3'b100;
+                        COUNTER = 1'b0;
+                    end
+                end
+                SHIFT_RA2 : begin // ALUaux
+                    ALU_control = 3'b000;
+                    SHIFTER_control = 3'b010;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b10;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end
+                SLTI : begin
+                    ALU_control = 3'b111;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b11;
+                    UC_control = 1'b0;
+                    UC_op = 2'b00;
+                end
+                BEQ : begin
+                    ALU_control = 3'b111;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b11;
+                    UC_control = 1'b1;
+                    UC_op = 2'b00;
+                end
+                BNE : begin
+                    ALU_control = 3'b111;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b11;
+                    UC_control = 1'b1;
+                    UC_op = 2'b01;
+                end
+                BLE : begin
+                    ALU_control = 3'b111;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b11;
+                    UC_control = 1'b1;
+                    UC_op = 2'b10;
+                end
+                BGT : begin
+                    ALU_control = 3'b111;
+                    SHIFTER_control = 3'b000;
+                    M_SHIFTER = 1'b0;
+                    M_ALUOut_control = 2'b11;
+                    UC_control = 1'b1;
+                    UC_op = 2'b11;
+                end
+                LUI : begin
+                    if (COUNTER == 1'b0) begin
+                        ALU_control = 3'b000;
+                        M_SHIFTER = 1'b1;
+                        SHIFTER_control = 3'b001; // load no shifter
+                        M_ALUOut_control = 2'b10;
+                        UC_control = 1'b0;
+                        UC_op = 2'b00;
+                        COUNTER = 1'b1;
+                    end else begin
+                        SHIFTER_control = 3'b010;
+                        COUNTER = 1'b0;
+                    end
+                end
+            endcase
         end
     end
 
