@@ -18,6 +18,7 @@ module logic_unit(
     wire [2:0] M_ALUOut_control;
     wire UC_control;
     wire [1:0] UC_op;
+    wire [1:0] ulaaux_control;
 
     // Data wires
     wire [31:0] ALU_out;
@@ -30,6 +31,7 @@ module logic_unit(
     wire [31:0] SHIFTER_out;
     wire [4:0] M_SHIFTER_out;
     wire [31:0] EXTEND_out;
+    wire [31:0] ALU_aux;
 
 
     // Criar um encoder pra traduzir ALUOp nas operações da ULA/SHIFTER
@@ -82,6 +84,13 @@ module logic_unit(
         UC_control,
         UC_op,
         Update_UC
+    );
+
+    ulaaux ulaaux_(
+        ALUSrcA,
+        ALUSrcB,
+        ulaaux_control,
+        ALU_aux
     );
 
 
