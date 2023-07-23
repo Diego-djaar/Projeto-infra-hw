@@ -93,5 +93,18 @@ module logic_unit(
         ALU_aux
     );
 
+    ALUcontrol ALUcontrol_(
+        clk,
+        reset,
+        ALUOp,
+        ALU_control,
+        SHIFTER_control,
+        M_SHIFTER,
+        M_ALUOut_control,
+        UC_control,
+        UC_op,
+        ulaaux_control
+    );
+
 
 endmodule
