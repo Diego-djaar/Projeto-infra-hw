@@ -18,7 +18,6 @@ initial A = 65'b0;
 initial S = 65'b0;
 initial P = 65'b0;
 initial operando = 0;  
-initial cnt = 0;
 
 always @(posedge clk)
 begin
@@ -53,7 +52,7 @@ begin
             hi = P[64:33];
 			lo = P[32:1];
 			n = 0;
-			operando = 1'b1; // Entrada da unidade de controle pra saber o fim da operação
+			operando = 1'b0; // Entrada da unidade de controle pra saber o fim da operação
 		end		 
 		else 
         begin
