@@ -5,7 +5,7 @@ input wire clk,
 input wire reset,
 input wire mult_control, // Vai virar 0 quando a flag operando avisar pra unidade de controle que acabou a multiplicação
 output reg [31:0] hi,
-output reg [31:0] lo
+output reg [31:0] lo,
 output reg operando // Indica quando a operação acabou
 );
 
