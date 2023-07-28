@@ -11,6 +11,8 @@ module cpu(
     wire RB_w;
     wire AB_w;
     wire MEM_DATA_REG_w;
+    wire mult_control;
+    wire mult_end; // Entrada da UC
 
     //Data wires
     wire [31:0] ULA_out;
@@ -31,6 +33,9 @@ module cpu(
     wire [31:0] A_out;
     wire [31:0] B_out;
     wire [31:0] MEM_DATA_REG_out;
+
+    wire [31:0] hi_in;
+    wire [31:0] lo_in;
 
 
     Registrador PC_(
@@ -101,6 +106,17 @@ module cpu(
         MEM_DATA_REG_w,
         MEM_to_IR,
         MEM_DATA_REG_out
+    );
+
+    mult mult_(
+        clk,
+        reset,
+        A_out,
+        B_out,
+        mult_control,
+        hi_in,
+        lo_in,
+        mult_end
     );
 
 
