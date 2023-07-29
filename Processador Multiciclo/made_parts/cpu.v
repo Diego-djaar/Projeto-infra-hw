@@ -5,6 +5,7 @@ module cpu(
 
     // Control wires
     wire PC_w;
+    wire EPC_w;
     wire MEM_w;
     wire IR_w;
     wire [1:0] M_WREG;
@@ -54,22 +55,39 @@ module cpu(
     wire [31:0] ALUOut;
     wire Update_UC;
 
-    wire [31:0] ALUOut_REG_out;
+    wire [31:0] ALU_REG_out;
 
     wire [31:0] extend_out;
     wire [31:0] shift_out;
+    wire [31:0] shift_PC_out;
+
+    wire [31:0] M_PC_out;
+    wire [31:0] EPC_out;
 
 
     mux4to1 mux_PC_(
         M_PC,
+        ALUOut,
+        ALU_REG_out,
+        shift_PC_out,
+        EPC_out,
+        M_PC_out
     );
 
     Registrador PC_(
         clk,
         reset,
         PC_w,
-        ULA_out, // Mudar pra o mux do PC
+        M_PC_out,
         PC_out
+    );
+
+    registrador EPC_(
+        clk,
+        reset,
+        EPC_w,
+        ALU_REG_out,
+        EPC_out
     );
 
     mux4to1 mux_MEM_(
@@ -148,9 +166,15 @@ module cpu(
         extend_out
     );
 
-    shift_left_2 shift_left_2_(
+    shift_left_2 shiftleft2_( // mux ALUSrcB
         extend_out,
         shift_out
+    );
+
+    shift_left_PC shiftleft_PC_( // mux PC
+        {RS, RD, OFFSET}, // Instruction[25:0]
+        PC[31:28], // PC[31:28]
+        shift_PC_out
     );
 
     mux4to1 mux_ALUSrcB_(
@@ -181,7 +205,7 @@ module cpu(
         reset,
         ALUOut_w,
         ALUOut,
-        ALUOut_REG_out
+        ALU_REG_out
     );
 
     Registrador MEM_DATA_REG_(
