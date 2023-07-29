@@ -20,6 +20,8 @@ module cpu(
     wire MEM_DATA_REG_w;
     wire mult_control;
     wire mult_end; // Entrada da UC
+    wire [1:0] LS_control;
+    wire [1:0] SS_control;
 
     //Data wires
     wire [31:0] ULA_out;
@@ -238,5 +240,17 @@ module cpu(
         mult_end
     );
 
+    LScontrol LScontrol_(
+        MEM_DATA_REG_out,
+        LS_control,
+        LScontrol_out
+    );
+
+    SScontrol SScontrol_(
+        B_out,
+        MEM_DATA_REG_out,
+        SS_control,
+        MEM_in
+    );
 
 endmodule
