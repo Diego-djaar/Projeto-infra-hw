@@ -13,6 +13,7 @@ module cpu(
     wire [1:0] M_PC;
     wire [1:0] M_ALUSrcA;
     wire [1:0] M_ALUSrcB;
+    wire [1:0] M_EXC;
     wire ALUOut_w;
     wire RB_w;
     wire AB_w;
@@ -90,6 +91,14 @@ module cpu(
         EPC_w,
         ALU_REG_out,
         EPC_out
+    );
+
+    mux3to1 mux_EXC_(
+        M_EXC,
+        32'd253,
+        32'd254,
+        32'd255,
+        M_exc_out
     );
 
     mux4to1 mux_MEM_(
