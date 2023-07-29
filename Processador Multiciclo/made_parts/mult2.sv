@@ -6,16 +6,19 @@ input wire reset,
 input wire mult_control, // Vai virar 0 quando a flag osperando avisar pra unidade de controle que acabou a multiplicação
 output reg [31:0] hi,
 output reg [31:0] lo,
-output reg neg,
 output reg operando // Indica quando a operação acabou
 );
 
+  
 parameter lim = {31{1'b1}}; // 2^31
 
 integer a,m,q;
 reg q0;
 integer n;
 
+reg neg;
+reg [63:0] res;   
+  
 initial n = 32;
 initial q0 = 0;
 initial m = 0;
@@ -63,9 +66,12 @@ begin
 		end 
 		else if(n == 0) // fim
         begin
-			hi = a;
-			lo = q;
-			operando = 1'b0;
+          res = {a,q};
+          if (neg) begin res = ~res+1; end;
+          lo = res[31:0];
+          hi = res[63:32];
+		  operando = 1'b0;
+          $display(res);
 		end		 
 		else 
         begin
