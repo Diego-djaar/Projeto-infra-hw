@@ -3,7 +3,7 @@ module update_UC(
     input wire maior,
     input wire UC_control, // Definir se vai enviar o valor pra UC ou não
     input wire [1:0] UC_op, // Selecionar entre BEQ, BNE, BLE E BGT
-    output wire update_UC_out
+    output reg update_UC_out
 );
 
         always @(*)

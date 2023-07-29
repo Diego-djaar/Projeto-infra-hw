@@ -1,7 +1,7 @@
 // sign extend 16-32
 module signextend(
-input reg[15:0] entrada, // instruction 15:0
-output reg[31:0] saida
+input wire [15:0] entrada, // instruction 15:0
+output reg [31:0] saida
 );
 
 always@(*)begin

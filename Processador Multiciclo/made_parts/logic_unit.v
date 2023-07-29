@@ -5,11 +5,11 @@ module logic_unit(
     input wire [31:0] ALUSrcB,
     input wire [4:0] SHAMT,
     input wire [3:0] ALUOp,
-    output wire SPECIAL,
-    output wire OVERFLOW,
-    output wire ZERO,
-    output wire [31:0] ALUOut,
-    output wire Update_UC
+    output reg SPECIAL,
+    output reg OVERFLOW,
+    output reg ZERO,
+    output reg [31:0] ALUOut,
+    output reg Update_UC
 );
     // Control wires
     wire [2:0] ALU_control;

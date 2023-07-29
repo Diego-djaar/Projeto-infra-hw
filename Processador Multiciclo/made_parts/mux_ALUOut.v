@@ -4,7 +4,7 @@ module mux_ALUOut(
     input wire [31:0] Data_1, // ALUresult
     input wire [31:0] Data_2, // SHIFTER
     input wire [31:0] Data_3, // 1-32 bit extender
-    output wire [31:0] Data_out // ALUOut
+    output reg [31:0] Data_out // ALUOut
 );
 
     always @(*)

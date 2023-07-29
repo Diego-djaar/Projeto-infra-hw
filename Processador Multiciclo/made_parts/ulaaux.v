@@ -2,7 +2,7 @@ module ulaaux (
     input wire [31:0] A,
     input wire [31:0] B,
     input wire [1:0] ulaaux_control, // Operações a ser definidas
-    output wire [31:0] ulaaux_out
+    output reg [31:0] ulaaux_out
 );
 
     wire [31:0] A1;

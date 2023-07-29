@@ -2,13 +2,13 @@ module ALUcontrol(
     input wire clk,
     input wire reset,
     input wire ALUOp,
-    output wire [2:0] ALU_control,
-    output wire [2:0] SHIFTER_control,
-    output wire M_SHIFTER,
-    output wire [1:0] M_ALUOut_control,
-    output wire UC_control,
-    output wire [1:0] UC_op,
-    output wire [1:0] ulaaux_control
+    output reg [2:0] ALU_control,
+    output reg [2:0] SHIFTER_control,
+    output reg M_SHIFTER,
+    output reg [1:0] M_ALUOut_control,
+    output reg UC_control,
+    output reg [1:0] UC_op,
+    output reg [1:0] ulaaux_control
 );
     // Com excessão das operações de shift, todas as operações são feitas em um ciclo
     // Portanto, é necessário criar o reg STATE, que só vai ser alterado se o COUNTER for 0 (significa que não estã no meio de nenhuma op)
