@@ -69,7 +69,7 @@ module logic_unit(
         EXTEND_out
     );
 
-    mux2to1 mux_ALUOut_(
+    mux4to1 mux_ALUOut_(
         M_ALUOut_control,
         ALU_aux,
         ALU_out,

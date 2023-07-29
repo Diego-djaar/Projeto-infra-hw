@@ -1,4 +1,4 @@
-module mux2to1 (
+module mux4to1 (
     input wire [1:0] selector,
     input wire [31:0] Data_0,
     input wire [31:0] Data_1,
