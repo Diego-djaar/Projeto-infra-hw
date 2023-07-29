@@ -7,7 +7,7 @@ module cpu(
     wire PC_w;
     wire MEM_w;
     wire IR_w;
-    wire M_WREG;
+    wire [1:0] M_WREG;
     wire RB_w;
     wire AB_w;
     wire MEM_DATA_REG_w;
