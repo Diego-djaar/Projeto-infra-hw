@@ -63,6 +63,8 @@ module cpu(
 
     wire [31:0] M_PC_out;
     wire [31:0] EPC_out;
+    wire [31:0] DIVM_out;
+    wire [31:0] M_exc_out;
 
 
     mux4to1 mux_PC_(
@@ -93,9 +95,9 @@ module cpu(
     mux4to1 mux_MEM_(
         M_MEM,
         PC_out,
-        //aluout
-        //special handler
-        // M_exc_out
+        ALU_REG_out,
+        DIVM_out,
+        M_exc_out,
         MEM_adress
     );
 
