@@ -22,7 +22,7 @@ module cpu(
     wire mult_end; // Entrada da UC
     wire [1:0] LS_control;
     wire [1:0] SS_control;
-
+    
     //Data wires
     wire [31:0] ULA_out;
     wire [31:0] PC_out;
@@ -68,6 +68,7 @@ module cpu(
     wire [31:0] EPC_out;
     wire [31:0] DIVM_out;
     wire [31:0] M_exc_out;
+    wire [31:0] extend2_out;
 
 
     mux4to1 mux_PC_(
@@ -101,6 +102,12 @@ module cpu(
         32'd254,
         32'd255,
         M_exc_out
+    );
+
+    LScontrol extend8_32_( // Reutilizando componente para criar um extensor de 8 pra 32 bits
+        MEM_out,
+        2'b01,
+        extend2_out
     );
 
     mux4to1 mux_MEM_(
@@ -170,7 +177,7 @@ module cpu(
         M_ALUSrcA,
         PC_out,
         A_out,
-        MEM_out,
+        extend2_out, // Bit menos significativo da memória
         ALUSrcA
     );
 
