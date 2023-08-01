@@ -15,7 +15,8 @@ reg [2:0] COUNTER;
     parameter ST_RESET = 5'b00001;
     parameter ST_ADD = 5'b00010;
     // Opcodes e functs
-    parameter ADD = 6'b000000;
+    parameter R = 6'b000000;
+    parameter ADD = 6'b100000;
 
 initial begin
     // Initial reset executado na máquina
