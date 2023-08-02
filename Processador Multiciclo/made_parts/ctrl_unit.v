@@ -167,7 +167,7 @@ module ctrl_unit (
               EPC_w = 1'b0;
               Mux_W_RB = 2'b00;
               Mux_W_DT = 3'b000;
-              Mux_PC = 2'b00;
+              //Mux_PC = 2'b00;
               Mux_EXC = 2'b00;
               ALUOut_w = 1'b0;
               Banco_reg_w = 1'b0;
@@ -196,7 +196,7 @@ module ctrl_unit (
             1: begin  // Estado vazio, lendo a memória
               COUNTER += 1;
             end
-            2: begin // Segundo ciclo
+            2: begin  // Segundo ciclo
               // Ler instrução
               STATE   = opcode;
               STATE_R = funct;
@@ -224,14 +224,28 @@ module ctrl_unit (
                 Mux_W_RB = 2'b00;
               else if (opcode == ST_R && (funct == STR_MFHI || funct == STR_MFLO)) begin
                 Mux_W_RB = 2'b01;
-                Mux_W_DT = funct == STR_MFHI? 3'b011 : 3'b100;
+                Mux_W_DT = funct == STR_MFHI ? 3'b011 : 3'b100;
                 Banco_reg_w = WRITE;
+              end else if (opcode == ST_R && (
+                  funct = STR_SLL || funct == STR_SRA || funct == STR_SRL
+                  )) begin
+                Mux_W_RB = 2'b01;
+                Mux_W_DT = 3'b000;
+              end else if (opcode == ST_J || opcode == ST_JAL) begin
+                Mux_W_RB = 2'b11;
+                Mux_PC = 2'b10;
+                PC_w = WRITE;
+                if (opcode == ST_J) STATE = ST_PC_MAIS_4;  // Volta para o PC+4
+              end else if (opcode == ST_R && funct == STR_RTE) begin
+                Mux_PC = 2'b11;
+                PC_w   = WRITE;
+                STATE  = ST_PC_MAIS_4;  // Volta para o PC+4
               end
 
 
               // Escreve no PC
               IR_w = READ;
-              PC_w = 1'b1;
+              PC_w = WRITE;
               COUNTER = 0;
             end
           endcase
