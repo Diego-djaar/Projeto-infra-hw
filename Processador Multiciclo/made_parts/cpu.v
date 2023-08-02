@@ -193,7 +193,7 @@ module cpu(
 
     shift_left_PC shiftleft_PC_( // mux PC
         {RS, RD, OFFSET}, // Instruction[25:0]
-        PC[31:28], // PC[31:28]
+        PC_out[31:28], // PC[31:28]
         shift_PC_out
     );
 
