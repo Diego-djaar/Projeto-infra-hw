@@ -12,6 +12,7 @@ module ctrl_unit (
     output reg MEM_w,
     output reg IR_w,
     output reg [1:0] Mux_W_RB,
+    output reg [2:0] Mux_W_DT,
     output reg [1:0] Mux_MEM,
     output reg [1:0] Mux_PC,
     output reg [1:0] Mux_ALUSrcA,
@@ -36,7 +37,7 @@ module ctrl_unit (
   // Variáveis
 
   reg [5:0] STATE;
-  reg [5:0] STATE_R; 
+  reg [5:0] STATE_R;
   reg [2:0] COUNTER;
 
   // Parâmetros (Constantes)
@@ -113,6 +114,7 @@ module ctrl_unit (
               PC_w_cond = 1'b0;
               EPC_w = 1'b0;
               Mux_W_RB = 2'b00;
+              Mux_W_DT = 3'b000;
               Mux_PC = 2'b00;
               Mux_EXC = 2'b00;
               ALUOut_w = 1'b0;
@@ -134,7 +136,7 @@ module ctrl_unit (
               IR_w = WRITE;
               Mux_ALUSrcA = 2'b00;
               Mux_ALUSrcB = 2'b01;
-              ALUOp = ALUcontrol.ADD; // O ADD do ALUcontrol
+              ALUOp = ALUcontrol.ADD;  // O ADD do ALUcontrol
               Mux_PC = 2'b01;
               // Soma Counter
               COUNTER += 1;
@@ -142,12 +144,38 @@ module ctrl_unit (
             1: begin  // Estado vazio
               COUNTER += 1;
             end
-            2: begin  
+            2: begin
               // Ler instrução
-              STATE = opcode;
+              STATE   = opcode;
               STATE_R = funct;
 
-              // TODO: algumas instruções requerem algo aqui
+              // Algumas instruções requerem algo aqui
+              if (opcode == ST_ADDI ||
+                  opcode == ST_ADDIU ||
+                  opcode == ST_ADDM ||
+                  opcode == ST_SLTI ||
+                  opcode == ST_LW ||
+                  opcode == ST_LB ||
+                  opcode == ST_LH ||
+                  opcode == ST_SW ||
+                  opcode == ST_SB ||
+                  opcode == ST_SH ||
+                  opcode == ST_LUI ||
+                  (opcode == ST_R && 
+                  (funct == STR_ADD ||
+                   funct == STR_AND ||
+                   funct == STR_SUB ||
+                   funct == STR_SRAV ||
+                   funct == STR_SLT ||
+                   funct == STR_SLLV)
+                  ))
+                Mux_W_RB = 2'b00;
+              else if (opcode == ST_R && (funct == STR_MFHI || funct == STR_MFLO)) begin
+                Mux_W_RB = 2'b01;
+                Mux_W_DT = funct == STR_MFHI? 3'b011 : 3'b100;
+                Banco_reg_w = WRITE;
+              end
+
 
               // Escreve no PC
               IR_w = READ;
