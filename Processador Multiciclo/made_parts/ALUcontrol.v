@@ -29,8 +29,8 @@ module ALUcontrol(
     parameter BEQ = 4'b1011;
     parameter BNE = 4'b1100;
     parameter BLE = 4'b1101;
-    parameter BGT = 4'1110;
-    parameter LUI = 4'1111;
+    parameter BGT = 4'b1110;
+    parameter LUI = 4'b1111;
 
     reg COUNTER = 1'b0; // Conta até um ciclo pra as operações de shift (que precisam primeiro do primeiro ciclo pro LOAD)
 

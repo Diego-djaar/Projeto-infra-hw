@@ -5,23 +5,30 @@ module cpu(
 
     // Control wires
     wire PC_w;
+    wire PC_w_cond;
     wire EPC_w;
     wire MEM_w;
     wire IR_w;
-    wire [1:0] M_WREG;
-    wire [1:0] M_MEM;
-    wire [1:0] M_PC;
-    wire [1:0] M_ALUSrcA;
-    wire [1:0] M_ALUSrcB;
-    wire [1:0] M_EXC;
+    wire [1:0] Mux_W_RB;
+    wire [2:0] Mux_W_DT;
+    wire [1:0] Mux_MEM;
+    wire [1:0] Mux_PC;
+    wire [1:0] Mux_ALUSrcA;
+    wire [1:0] Mux_ALUSrcB;
+    wire [1:0] Mux_EXC;
     wire ALUOut_w;
     wire RB_w;
-    wire AB_w;
+    wire A_w;
+    wire B_w;
+    wire HI_w;
+    wire LO_w;
     wire MEM_DATA_REG_w;
     wire mult_control;
     wire mult_end; // Entrada da UC
     wire [1:0] LS_control;
     wire [1:0] SS_control;
+    wire DivOp;
+    wire DivmOp;
     
     //Data wires
     wire [31:0] ULA_out;
@@ -45,8 +52,8 @@ module cpu(
     wire [31:0] B_out;
     wire [31:0] MEM_DATA_REG_out;
 
-    wire [31:0] hi_in;
-    wire [31:0] lo_in;
+    wire [31:0] HI_in;
+    wire [31:0] LO_in;
 
     wire [31:0] ALUSrcA;
     wire [31:0] ALUSrcB;
@@ -64,27 +71,27 @@ module cpu(
     wire [31:0] shift_out;
     wire [31:0] shift_PC_out;
 
-    wire [31:0] M_PC_out;
+    wire [31:0] Mux_PC_out;
     wire [31:0] EPC_out;
     wire [31:0] DIVM_out;
-    wire [31:0] M_exc_out;
+    wire [31:0] Mux_exc_out;
     wire [31:0] extend2_out;
 
 
     mux4to1 mux_PC_(
-        M_PC,
+        Mux_PC,
         ALUOut,
         ALU_REG_out,
         shift_PC_out,
         EPC_out,
-        M_PC_out
+        Mux_PC_out
     );
 
     Registrador PC_(
         clk,
         reset,
         PC_w,
-        M_PC_out,
+        Mux_PC_out,
         PC_out
     );
 
@@ -97,11 +104,11 @@ module cpu(
     );
 
     mux3to1 mux_EXC_(
-        M_EXC,
+        Mux_EXC,
         32'd253,
         32'd254,
         32'd255,
-        M_exc_out
+        Mux_exc_out
     );
 
     LScontrol extend8_32_( // Reutilizando componente para criar um extensor de 8 pra 32 bits
@@ -111,11 +118,11 @@ module cpu(
     );
 
     mux4to1 mux_MEM_(
-        M_MEM,
+        Mux_MEM,
         PC_out,
         ALU_REG_out,
         DIVM_out,
-        M_exc_out,
+        Mux_exc_out,
         MEM_adress
     );
 
@@ -138,12 +145,24 @@ module cpu(
         OFFSET
     );
 
-    mux_writereg M_WREG_(
-        M_WREG,
+    mux_writereg Mux_W_RB_(
+        Mux_W_RB,
         RT,
         OFFSET,
         WRITEREG_in
     );
+
+
+    mux_writedata Mux_W_DT_(
+        Mux_W_DT,
+        ALUOut,
+        LScontrol_out,
+        MEM_DATA_REG_out,
+        HI_out,
+        LO_out,
+        Mux_W_DATA_out
+    );
+    wire [31:0] Mux_W_DATA_out;
 
     Banco_reg REG_BASE_(
         clk,
@@ -152,7 +171,7 @@ module cpu(
         RS,
         RT,
         WRITEREG_in,
-        ULA_out,
+        Mux_W_DATA_out,
         RB_to_A,
         RB_to_B
     );
@@ -160,7 +179,7 @@ module cpu(
     Registrador A_(
         clk,
         reset,
-        AB_w,
+        A_w,
         RB_to_A,
         A_out
     );
@@ -168,13 +187,31 @@ module cpu(
     Registrador B_(
         clk,
         reset,
-        AB_w,
+        B_w,
         RB_to_B,
         B_out
     );
 
+    Registrador HI_(
+        clk,
+        reset,
+        HI_w,
+        HI_in,
+        HI_out
+    );
+    wire [31:0] HI_out;
+
+    Registrador LO_(
+        clk,
+        reset,
+        LO_w,
+        LO_in,
+        LO_out
+    );
+    wire [31:0] LO_out;
+
     mux3to1 mux_ALUSrcA_(
-        M_ALUSrcA,
+        Mux_ALUSrcA,
         PC_out,
         A_out,
         extend2_out, // Bit menos significativo da memória
@@ -198,7 +235,7 @@ module cpu(
     );
 
     mux4to1 mux_ALUSrcB_(
-        M_ALUSrcB,
+        Mux_ALUSrcB,
         B_out,
         32'd4, // Não sei se pode isso
         extend_out,
@@ -242,8 +279,8 @@ module cpu(
         A_out,
         B_out,
         mult_control,
-        hi_in,
-        lo_in,
+        HI_in,
+        LO_in,
         mult_end
     );
 
