@@ -297,4 +297,38 @@ module cpu(
         MEM_in
     );
 
+    control_unit control_unit_(
+        clk,
+        reset,
+        Update_UC,
+        OPCODE,
+        OFFSET[5:0],
+        reset_out,
+        PC_w,
+        PC_w_cond,
+        EPC_w,
+        MEM_w,
+        IR_w,
+        Mux_W_RB,
+        Mux_W_DT,
+        Mux_MEM,
+        Mux_PC,
+        Mux_ALUSrcA,
+        Mux_ALUSrcB,
+        Mux_EXC,
+        ALUOut_w,
+        RB_w,
+        A_w,
+        B_w,
+        HI_w,
+        LO_w,
+        MEM_DATA_REG_w,
+        mult_control,
+        mult_end,
+        LS_control,
+        SS_control,
+        DivOp,
+        DivmOp,
+        ALUOp,
+    );
 endmodule

@@ -1,5 +1,5 @@
 `include "made_parts/ALUcontrol.v"
-module ctrl_unit (
+module control_unit (
     input wire clk,
     input wire reset_in,
     input wire update_uc,
@@ -260,11 +260,11 @@ module ctrl_unit (
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_ADD ? ALUcontrol.ADD :
-                                                        STR_AND ? ALU_control.AND :
-                                                        STR_SUB ? ALU_control.SUB :
-                                                        STR_SRAV ? ALU_control.SRAV :
-                                                        STR_SLT ? ALU_control.SLT :
-                                                        STR_SLLV ? ALU_control.SLLV : 4'b0000;
+                                                                                                                STR_AND ? ALU_control.AND :
+                                                                                                                STR_SUB ? ALU_control.SUB :
+                                                                                                                STR_SRAV ? ALU_control.SRAV :
+                                                                                                                STR_SLT ? ALU_control.SLT :
+                                                                                                                STR_SLLV ? ALU_control.SLLV : 4'b0000;
 
                             COUNTER += 1;
                         end
