@@ -51,8 +51,8 @@ module cpu(
     wire [31:0] B_out;
     wire [31:0] MEM_DATA_REG_out;
 
-    wire [31:0] hi_in;
-    wire [31:0] lo_in;
+    wire [31:0] HI_in;
+    wire [31:0] LO_in;
 
     wire [31:0] ALUSrcA;
     wire [31:0] ALUSrcB;
