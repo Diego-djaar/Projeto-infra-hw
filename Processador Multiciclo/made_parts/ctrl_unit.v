@@ -95,12 +95,64 @@ module ctrl_unit (
       if (STATE != ST_RESET) begin
         STATE = ST_RESET;
         // Resetando todos os sinais
+        PC_w = 1'b0;
+        PC_w_cond = 1'b0;
+        EPC_w = 1'b0;
+        MEM_w = 1'b0;
+        IR_w = 1'b0;
+        Mux_W_RB = 2'b00;
+        Mux_W_DT = 3'b000;
+        Mux_MEM = 2'b00;
+        Mux_PC = 2'b00;
+        Mux_ALUSrcA = 2'b00;
+        Mux_ALUSrcB = 2'b00;
+        Mux_EXC = 2'b00;
+        ALUOut_w = 1'b0;
+        Banco_reg_w = 1'b0;
+        A_reg_w = 1'b0;
+        B_reg_w = 1'b0;
+        HI_reg_w = 1'b0;
+        LO_reg_w = 1'b0;
+        MEM_DATA_REG_w = 1'b0;
+        mult_control = 1'b0;
+        mult_end = 1'b0;  // Entrada da UC
+        LS_control = 2'b00;
+        SS_control = 2'b00;
+        DivOp = 1'b0;
+        DivmOp = 1'b0;
+        ALUOp = 4'b0000;
         reset_out = 1'b1;
         // Resetando o contador para 0
         COUNTER = 3'b000;
       end else begin
         STATE = ST_PC_MAIS_4;
         // Resetando todos os sinais
+        PC_w = 1'b0;
+        PC_w_cond = 1'b0;
+        EPC_w = 1'b0;
+        MEM_w = 1'b0;
+        IR_w = 1'b0;
+        Mux_W_RB = 2'b00;
+        Mux_W_DT = 3'b000;
+        Mux_MEM = 2'b00;
+        Mux_PC = 2'b00;
+        Mux_ALUSrcA = 2'b00;
+        Mux_ALUSrcB = 2'b00;
+        Mux_EXC = 2'b00;
+        ALUOut_w = 1'b0;
+        Banco_reg_w = 1'b0;
+        A_reg_w = 1'b0;
+        B_reg_w = 1'b0;
+        HI_reg_w = 1'b0;
+        LO_reg_w = 1'b0;
+        MEM_DATA_REG_w = 1'b0;
+        mult_control = 1'b0;
+        mult_end = 1'b0;  // Entrada da UC
+        LS_control = 2'b00;
+        SS_control = 2'b00;
+        DivOp = 1'b0;
+        DivmOp = 1'b0;
+        ALUOp = 4'b0000;
         reset_out = 1'b0;
         // Resetando o contador para 0
         COUNTER = 3'b000;
