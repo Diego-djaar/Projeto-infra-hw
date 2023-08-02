@@ -31,7 +31,7 @@ module ctrl_unit (
     output reg [1:0] SS_control,
     output reg DivOp,
     output reg DivmOp,
-    output reg ALUOp
+    output reg [3:0] ALUOp
 );
 
   // Variáveis
@@ -250,8 +250,39 @@ module ctrl_unit (
             end
           endcase
         end
-        ST_R: begin
+        ST_R: begin // Instruções do tipo R
+            case (STATE_R)
+                STR_ADD, STR_AND, STR_SUB, STR_SRAV, STR_SLT, STR_SLLV: begin
+                    case (COUNTER)
+                        0: begin
+                            A_reg_w = WRITE;
+                            B_reg_w = WRITE;
+                            Mux_ALUSrcA = 2'b01;
+                            Mux_ALUSrcB = 2'b00;
+                            ALUOp = STATE_R == STR_ADD ? ALUcontrol.ADD :
+                                                        STR_AND ? ALU_control.AND :
+                                                        STR_SUB ? ALU_control.SUB :
+                                                        STR_SRAV ? ALU_control.SRAV :
+                                                        STR_SLT ? ALU_control.SLT :
+                                                        STR_SLLV ? ALU_control.SLLV : 4'b0000;
 
+                            COUNTER += 1;
+                        end
+                        1: begin
+                            Mux_W_DT = 3'b000;
+                            RB_w = WRITE;
+                            COUNTER += 1;
+                        end
+                        2:begin // Esperar escrever
+                            COUNTER +=1;
+                        end
+                        3:begin // Ir para pc mais 4
+                            COUNTER = 0;
+                            STATE = ST_PC_MAIS_4;
+                        end
+                    endcase
+                end
+            endcase
         end
       endcase
     end
