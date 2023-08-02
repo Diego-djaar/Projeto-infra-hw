@@ -141,10 +141,10 @@ module ctrl_unit (
               // Soma Counter
               COUNTER += 1;
             end
-            1: begin  // Estado vazio
+            1: begin  // Estado vazio, lendo a memória
               COUNTER += 1;
             end
-            2: begin
+            2: begin // Segundo ciclo
               // Ler instrução
               STATE   = opcode;
               STATE_R = funct;
