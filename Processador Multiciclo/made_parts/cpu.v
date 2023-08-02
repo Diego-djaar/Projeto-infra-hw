@@ -10,6 +10,7 @@ module cpu(
     wire MEM_w;
     wire IR_w;
     wire [1:0] Mux_W_RB;
+    wire [2:0] Mux_W_DT;
     wire [1:0] Mux_MEM;
     wire [1:0] Mux_PC;
     wire [1:0] Mux_ALUSrcA;
@@ -151,6 +152,18 @@ module cpu(
         WRITEREG_in
     );
 
+
+    mux_writedata Mux_W_DT_(
+        Mux_W_DT,
+        ALUOut,
+        LScontrol_out,
+        MEM_DATA_REG_out,
+        HI_out,
+        LO_out,
+        Mux_W_DATA_out
+    );
+    wire [31:0] Mux_W_DATA_out;
+
     Banco_reg REG_BASE_(
         clk,
         reset,
@@ -158,7 +171,7 @@ module cpu(
         RS,
         RT,
         WRITEREG_in,
-        ULA_out,
+        Mux_W_DATA_out,
         RB_to_A,
         RB_to_B
     );
@@ -186,6 +199,7 @@ module cpu(
         HI_in,
         HI_out
     );
+    wire [31:0] HI_out;
 
     Registrador LO_(
         clk,
@@ -194,6 +208,7 @@ module cpu(
         LO_in,
         LO_out
     );
+    wire [31:0] LO_out;
 
     mux3to1 mux_ALUSrcA_(
         Mux_ALUSrcA,
@@ -264,8 +279,8 @@ module cpu(
         A_out,
         B_out,
         mult_control,
-        hi_in,
-        lo_in,
+        HI_in,
+        LO_in,
         mult_end
     );
 
