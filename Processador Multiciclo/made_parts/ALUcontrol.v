@@ -1,7 +1,7 @@
 module ALUcontrol(
     input wire clk,
     input wire reset,
-    input wire ALUOp,
+    input wire [3:0] ALUOp,
     output reg [2:0] ALU_control,
     output reg [2:0] SHIFTER_control,
     output reg M_SHIFTER,
