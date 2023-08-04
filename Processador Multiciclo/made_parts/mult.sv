@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module mult(
 input wire clk,
 input wire reset,
@@ -95,3 +97,4 @@ begin
 end
 
 endmodule
+
