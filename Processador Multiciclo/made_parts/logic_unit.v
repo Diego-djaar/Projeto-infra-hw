@@ -15,7 +15,7 @@ module logic_unit(
     wire [2:0] ALU_control;
     wire [2:0] SHIFTER_control;
     wire M_SHIFTER;
-    wire [2:0] M_ALUOut_control;
+    wire [1:0] M_ALUOut_control;
     wire UC_control;
     wire [1:0] UC_op;
     wire [1:0] ulaaux_control;
