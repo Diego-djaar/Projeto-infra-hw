@@ -1,74 +1,100 @@
+`timescale 1ns/1ps
+
 module mult(
 input wire clk,
 input wire reset,
 input wire [31:0] x,
 input wire [31:0] y,
-input wire mult_control, // Vai virar 0 quando a flag operando avisar pra unidade de controle que acabou a multiplicação
+input wire mult_control,
 output reg [31:0] hi,
 output reg [31:0] lo,
-output reg operando // Indica quando a operação acabou
+output reg operando
 );
 
-reg [64:0] A;
-reg [64:0] S;
-reg [64:0] P;
+  
+parameter lim = {31{1'b1}}; // 2^31
+
+integer a,m,q;
+reg q0;
 integer n;
 
-initial A = 65'b0;
-initial S = 65'b0;
-initial P = 65'b0;
-initial operando = 0;  
+reg neg;
+reg [63:0] res;   
+  
+initial n = 32;
+initial q0 = 0;
+initial m = 0;
+initial a = 0;
+initial q = 0;
+initial operando = 0;
+initial hi = 32'b0;
+initial lo  = 32'b0;
 
 always @(posedge clk)
 begin
-    if (!operando && mult_control) // mudar p código aluop de 4 bits
+    if (!operando && mult_control)
     begin
 		operando = 1'b1;
+		n = 32;
 	end
 
 	if (reset) 
     begin
-		A = 65'b0;
-		S = 65'b0;
-		P= 65'b0;
-		hi = 32'b0;
-		lo = 32'b0;
-		n = 0;
-        operando = 1'b0;
-		fim = 1'b0;
+		n = 32;
+		q0 = 0;
+		m = 0;
+		a = 0;
+		q = 0;
+		operando = 0;  
 	end
 	
 	if (operando) 
     begin	
-		if(!n)
+		if(n == 32) //começo
         begin
-			A = {x, 32'b0, 1'b0};
-			S = {~x+1, 32'b0, 1'b0};
-			P = {32'b0 , y, 1'b0};
-			P = P>>>1;
+          m = x;
+          q = y;
+          neg = 1'b0;
+          if (m >= lim) 
+          begin
+            neg = ~neg;
+            m = ~m+1;
+          end
+          if (q >= lim) 
+          begin
+            neg = ~neg;
+            q = ~q+1;
+          end
+		    q0 = 0;
+			a = 0;
 		end 
-		else if(n == 32)
+		else if(n == 0) // fim
         begin
-            hi = P[64:33];
-			lo = P[32:1];
-			n = 0;
-			operando = 1'b0; // Entrada da unidade de controle pra saber o fim da operação
+          res = {a,q};
+          if (neg) begin res = ~res+1; end;
+          lo = res[31:0];
+          hi = res[63:32];
+		  operando = 1'b0;
+          //$display(res);
 		end		 
 		else 
         begin
-			if(P[1:0] == 2'b01)
-            begin
-				P = P + A;
-			end 
-			else if(P[1:0]==2'b10)
-            begin
-				P = P + S;
+			if (q[0] && !q0)
+			begin
+				a = a-m;
 			end
-			P = P>>>1;
-
+			else if (!q[0] && q0)
+			begin
+				a = a+m;
+			end
+			q0 = q[0];
+			q[31] =a[0];
+			a = a>>>1;
+			q = q>>>1;
 		end
-		n = n+1;
+		n = n-1;
     end	
 end
 
 endmodule
+
