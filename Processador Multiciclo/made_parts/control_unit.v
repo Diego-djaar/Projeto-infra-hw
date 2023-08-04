@@ -190,10 +190,10 @@ module control_unit (
               ALUOp = ALUcontrol.ADD;  // O ADD do ALUcontrol
               Mux_PC = 2'b01;
               // Soma Counter
-              COUNTER += 1;
+              COUNTER = COUNTER + 1'b1;
             end
             1: begin  // Estado vazio, lendo a memória
-              COUNTER += 1;
+              COUNTER = COUNTER + 1'b1;
             end
             2: begin  // Segundo ciclo
               // Ler instrução
@@ -265,12 +265,12 @@ module control_unit (
                                                                                                                 STR_SLT ? ALU_control.SLT :
                                                                                                                 STR_SLLV ? ALU_control.SLLV : 4'b0000;
 
-                            COUNTER += 1;
+                            COUNTER = COUNTER + 1'b1;
                         end
                         1: begin
                             Mux_W_DT = 3'b000;
                             RB_w = WRITE;
-                            COUNTER += 1;
+                            COUNTER = COUNTER + 1'b1;
                         end
                         2:begin // Esperar escrever
                             COUNTER +=1;
