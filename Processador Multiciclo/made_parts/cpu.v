@@ -76,6 +76,9 @@ module cpu(
     wire [31:0] DIVM_out;
     wire [31:0] Mux_exc_out;
     wire [31:0] extend2_out;
+    wire [31:0] Mux_W_DATA_out;
+    wire [31:0] HI_out;
+    wire [31:0] LO_out;
 
 
     mux4to1 mux_PC_(
@@ -162,7 +165,6 @@ module cpu(
         LO_out,
         Mux_W_DATA_out
     );
-    wire [31:0] Mux_W_DATA_out;
 
     Banco_reg REG_BASE_(
         clk,
@@ -199,7 +201,6 @@ module cpu(
         HI_in,
         HI_out
     );
-    wire [31:0] HI_out;
 
     Registrador LO_(
         clk,
@@ -208,7 +209,6 @@ module cpu(
         LO_in,
         LO_out
     );
-    wire [31:0] LO_out;
 
     mux3to1 mux_ALUSrcA_(
         Mux_ALUSrcA,
