@@ -79,8 +79,8 @@ module logic_unit(
     );
 
     update_UC update_UC_(
-        Gt,
         Eq,
+        Gt,
         UC_control,
         UC_op,
         Update_UC

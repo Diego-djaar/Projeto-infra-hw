@@ -8,7 +8,7 @@ module update_UC(
 
         always @(*)
         begin
-            update_UC_out = 1'b0; // Não sei se essa linha é necessária
+            // update_UC_out = 1'b0; // Não sei se essa linha é necessária
             if (UC_control == 1'b1) begin
                 case (UC_op)
                     2'b00: update_UC_out = (igual) ? 1'b1 : 1'b0; // BEQ
