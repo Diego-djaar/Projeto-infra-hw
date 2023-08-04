@@ -1,3 +1,4 @@
+`include "ALUcontrol.v"
 module control_unit (
     input wire clk,
     input wire reset_in,
@@ -88,6 +89,24 @@ module control_unit (
     // Initial reset executado na máquina
     reset_out = 1'b1;
   end
+
+  // Operações do ALUcontrol
+    parameter NO_OP = 4'b0000; // equivalente a PASS_A
+    parameter ADD = 4'b0001;
+    parameter SUB = 4'b0010;
+    parameter AND = 4'b0011;
+    parameter PASS_B = 4'b0100; // Passa pela ULAaux
+    parameter SHIFT_L1 = 4'b0101;
+    parameter SHIFT_L2 = 4'b0110;
+    parameter SHIFT_R = 4'b0111;
+    parameter SHIFT_RA1 = 4'b1000;
+    parameter SHIFT_RA2 = 4'b1001;
+    parameter SLTI = 4'b1010;
+    parameter BEQ = 4'b1011;
+    parameter BNE = 4'b1100;
+    parameter BLE = 4'b1101;
+    parameter BGT = 4'b1110;
+    parameter LUI = 4'b1111;
 
   always @(posedge clk) begin
     if (reset_in) begin  // Se reset for pressionado
@@ -187,7 +206,7 @@ module control_unit (
               IR_w = WRITE;
               Mux_ALUSrcA = 2'b00;
               Mux_ALUSrcB = 2'b01;
-              ALUOp = ALUcontrol.ADD;  // O ADD do ALUcontrol
+              ALUOp = ADD;  // O ADD do ALUcontrol
               Mux_PC = 2'b01;
               // Soma Counter
               COUNTER = COUNTER + 1'b1;
@@ -226,8 +245,7 @@ module control_unit (
                 Mux_W_DT = funct == STR_MFHI ? 3'b011 : 3'b100;
                 Banco_reg_w = WRITE;
               end else if (opcode == ST_R && (
-                  funct = STR_SLL || funct == STR_SRA || funct == STR_SRL
-                  )) begin
+                  funct == STR_SLL || funct == STR_SRA || funct == STR_SRL)) begin
                 Mux_W_RB = 2'b01;
                 Mux_W_DT = 3'b000;
               end else if (opcode == ST_J || opcode == ST_JAL) begin
@@ -258,22 +276,22 @@ module control_unit (
                             B_reg_w = WRITE;
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
-                            ALUOp = STATE_R == STR_ADD ? ALUcontrol.ADD :
-                                                                                                                STR_AND ? ALU_control.AND :
-                                                                                                                STR_SUB ? ALU_control.SUB :
-                                                                                                                STR_SRAV ? ALU_control.SRAV :
-                                                                                                                STR_SLT ? ALU_control.SLT :
-                                                                                                                STR_SLLV ? ALU_control.SLLV : 4'b0000;
+                            ALUOp = STATE_R == STR_ADD ? ADD :
+                                                                                                                STR_AND ? AND :
+                                                                                                                STR_SUB ? SUB :
+                                                                                                                STR_SRAV ? SHIFT_RA2 :
+                                                                                                                STR_SLT ? SLTI :
+                                                                                                                STR_SLLV ? SHIFT_L2 : 4'b0000;
 
-                            COUNTER = COUNTER + 1'b1;
+                            COUNTER = COUNTER + 1;
                         end
                         1: begin
                             Mux_W_DT = 3'b000;
-                            RB_w = WRITE;
-                            COUNTER = COUNTER + 1'b1;
+                            Banco_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
                         end
                         2:begin // Esperar escrever
-                            COUNTER +=1;
+                            COUNTER = COUNTER + 1;
                         end
                         3:begin // Ir para pc mais 4
                             COUNTER = 0;
