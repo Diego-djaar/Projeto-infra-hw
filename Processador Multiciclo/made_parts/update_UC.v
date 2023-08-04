@@ -5,7 +5,11 @@ module update_UC(
     input wire [1:0] UC_op, // Selecionar entre BEQ, BNE, BLE E BGT
     output reg update_UC_out
 );
-
+        
+        initial begin
+            update_UC_out = 1'b0;
+        end
+        
         always @(*)
         begin
             // update_UC_out = 1'b0; // Não sei se essa linha é necessária
