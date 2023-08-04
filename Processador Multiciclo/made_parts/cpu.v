@@ -51,8 +51,6 @@ module cpu(
     wire [31:0] A_out;
     wire [31:0] B_out;
     wire [31:0] MEM_DATA_REG_out;
-    
-    wire [31:0] Mux_W_DATA_out;
 
     wire [31:0] HI_in;
     wire [31:0] LO_in;
@@ -81,11 +79,6 @@ module cpu(
     wire [31:0] Mux_W_DATA_out;
     wire [31:0] HI_out;
     wire [31:0] LO_out;
-
-    
-    wire [31:0] HI_out;
-    wire [31:0] LO_out;
-
 
     mux4to1 mux_PC_(
         Mux_PC,
