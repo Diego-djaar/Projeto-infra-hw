@@ -28,6 +28,7 @@ module cpu(
     wire mult_control;
     wire mult_end; // Entrada da UC
     wire [1:0] LS_control;
+    wire [31:0] LScontrol_out;
     wire [1:0] SS_control;
     wire DivOp;
     wire DivmOp;
@@ -43,7 +44,9 @@ module cpu(
     wire [5:0] OPCODE;
     wire [4:0] RS;
     wire [4:0] RT;
+    wire [4:0] RD;
     wire [15:0] OFFSET;
+    assign RD = OFFSET[15:11];
 
     wire [4:0] WRITEREG_in;
 
