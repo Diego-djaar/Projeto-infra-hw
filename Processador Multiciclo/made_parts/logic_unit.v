@@ -9,7 +9,7 @@ module logic_unit(
     output reg OVERFLOW,
     output reg ZERO,
     output reg [31:0] ALUOut,
-    output reg Update_UC
+    output wire Update_UC
 );
     // Control wires
     wire [2:0] ALU_control;
@@ -78,7 +78,7 @@ module logic_unit(
         EXTEND_out
     );
 
-    update_UC update_UC_(
+    update_UC_gate update_UC_(
         Eq,
         Gt,
         UC_control,

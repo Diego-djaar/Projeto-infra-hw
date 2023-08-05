@@ -1,4 +1,4 @@
-module update_UC(
+module update_UC_gate(
     input wire igual,
     input wire maior,
     input wire UC_control, // Definir se vai enviar o valor pra UC ou não

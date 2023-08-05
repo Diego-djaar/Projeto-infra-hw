@@ -3,6 +3,8 @@ module cpu(
     input wire reset
 );
 
+    wire RESET_OUT;
+
     // Control wires
     wire PC_w;
     wire PC_w_cond;
@@ -302,7 +304,7 @@ module cpu(
         Update_UC,
         OPCODE,
         OFFSET[5:0],
-        reset_out,
+        RESET_OUT,
         PC_w,
         PC_w_cond,
         EPC_w,
@@ -328,6 +330,6 @@ module cpu(
         SS_control,
         DivOp,
         DivmOp,
-        ALUOp,
+        ALUOp
     );
 endmodule
