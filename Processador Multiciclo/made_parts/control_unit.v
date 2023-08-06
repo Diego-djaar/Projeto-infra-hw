@@ -230,16 +230,17 @@ module control_unit (
                   opcode == ST_SW ||
                   opcode == ST_SB ||
                   opcode == ST_SH ||
-                  opcode == ST_LUI ||
-                  (opcode == ST_R && 
+                  opcode == ST_LUI
+                  )
+                Mux_W_RB = 2'b00;
+              else if (opcode == ST_R && 
                   (funct == STR_ADD ||
                    funct == STR_AND ||
                    funct == STR_SUB ||
                    funct == STR_SRAV ||
                    funct == STR_SLT ||
                    funct == STR_SLLV)
-                  ))
-                Mux_W_RB = 2'b00;
+                  )) Mux_W_RB = 2'01;
               else if (opcode == ST_R && (funct == STR_MFHI || funct == STR_MFLO)) begin
                 Mux_W_RB = 2'b01;
                 Mux_W_DT = funct == STR_MFHI ? 3'b011 : 3'b100;
@@ -280,11 +281,11 @@ module control_unit (
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_ADD ? ADD :
-                                                                                                                STR_AND ? AND :
-                                                                                                                STR_SUB ? SUB :
-                                                                                                                STR_SRAV ? SHIFT_RA2 :
-                                                                                                                STR_SLT ? SLTI :
-                                                                                                                STR_SLLV ? SHIFT_L2 : 4'b0000;
+                                              STR_AND ? AND :
+                                              STR_SUB ? SUB :
+                                              STR_SRAV ? SHIFT_RA2 :
+                                              STR_SLT ? SLTI :
+                                              STR_SLLV ? SHIFT_L2 : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
                         2: begin
