@@ -5,7 +5,7 @@ module ALUcontrol(
     output reg [2:0] ALU_control,
     output reg [2:0] SHIFTER_control,
     output reg M_SHIFTER,
-    output reg [1:0] M_ALUOut_control,
+    output reg [2:0] M_ALUOut_control,
     output reg UC_control,
     output reg [1:0] UC_op,
     output reg [1:0] ulaaux_control
@@ -44,7 +44,7 @@ module ALUcontrol(
             ALU_control = 3'b000;
             SHIFTER_control = 3'b000;
             M_SHIFTER = 1'b0;
-            M_ALUOut_control = 3'b00;
+            M_ALUOut_control = 3'b000;
             UC_control = 1'b0;
             UC_op = 2'b00;
             ulaaux_control = 2'b00;
@@ -54,7 +54,7 @@ module ALUcontrol(
                     ALU_control = 3'b000;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b01;
+                    M_ALUOut_control = 3'b001;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -63,7 +63,7 @@ module ALUcontrol(
                     ALU_control = 3'b001;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b01;
+                    M_ALUOut_control = 3'b001;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -72,7 +72,7 @@ module ALUcontrol(
                     ALU_control = 3'b010;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b01;
+                    M_ALUOut_control = 3'b001;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -81,7 +81,7 @@ module ALUcontrol(
                     ALU_control = 3'b011;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b01;
+                    M_ALUOut_control = 3'b001;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -90,7 +90,7 @@ module ALUcontrol(
                     ALU_control = 3'b000;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b00; // Saída da ulaaux
+                    M_ALUOut_control = 3'b000; // Saída da ulaaux
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -100,7 +100,7 @@ module ALUcontrol(
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
-                        M_ALUOut_control = 2'b10;
+                        M_ALUOut_control = 3'b010;
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
@@ -114,7 +114,7 @@ module ALUcontrol(
                     ALU_control = 3'b000;
                     SHIFTER_control = 3'b010;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b10;
+                    M_ALUOut_control = 3'b010;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b01;
@@ -124,7 +124,7 @@ module ALUcontrol(
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
-                        M_ALUOut_control = 2'b10;
+                        M_ALUOut_control = 3'b010;
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
@@ -139,7 +139,7 @@ module ALUcontrol(
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
-                        M_ALUOut_control = 2'b10;
+                        M_ALUOut_control = 3'b010;
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
@@ -153,7 +153,7 @@ module ALUcontrol(
                     ALU_control = 3'b000;
                     SHIFTER_control = 3'b010;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b10;
+                    M_ALUOut_control = 3'b010;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b1x;
@@ -162,7 +162,7 @@ module ALUcontrol(
                     ALU_control = 3'b111;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b11;
+                    M_ALUOut_control = 3'b011;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -171,7 +171,7 @@ module ALUcontrol(
                     ALU_control = 3'b111;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b11;
+                    M_ALUOut_control = 3'b011;
                     UC_control = 1'b1;
                     UC_op = 2'b00;
                     ulaaux_control = 2'b00;
@@ -180,7 +180,7 @@ module ALUcontrol(
                     ALU_control = 3'b111;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b11;
+                    M_ALUOut_control = 3'b011;
                     UC_control = 1'b1;
                     UC_op = 2'b01;
                     ulaaux_control = 2'b00;
@@ -189,7 +189,7 @@ module ALUcontrol(
                     ALU_control = 3'b111;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b11;
+                    M_ALUOut_control = 3'b011;
                     UC_control = 1'b1;
                     UC_op = 2'b10;
                     ulaaux_control = 2'b00;
@@ -198,7 +198,7 @@ module ALUcontrol(
                     ALU_control = 3'b111;
                     SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 2'b11;
+                    M_ALUOut_control = 3'b011;
                     UC_control = 1'b1;
                     UC_op = 2'b11;
                     ulaaux_control = 2'b00;
@@ -208,7 +208,7 @@ module ALUcontrol(
                         ALU_control = 3'b000;
                         M_SHIFTER = 1'b1;
                         SHIFTER_control = 3'b001; // load no shifter
-                        M_ALUOut_control = 2'b10;
+                        M_ALUOut_control = 3'b010;
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
