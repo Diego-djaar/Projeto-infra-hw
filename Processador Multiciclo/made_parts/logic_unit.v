@@ -8,7 +8,7 @@ module logic_unit(
     output reg SPECIAL,
     output reg OVERFLOW,
     output reg ZERO,
-    output reg [31:0] ALUOut,
+    output wire [31:0] ALUOut,
     output wire Update_UC
 );
     // Control wires
@@ -21,7 +21,7 @@ module logic_unit(
     wire [1:0] ulaaux_control;
 
     // Data wires
-    wire [31:0] ALU_out;
+    wire [31:0] ALUResult; // aparente fonte do bug // Talvez necessário??? // Descobri como usar
     wire Of;
     wire Ng;
     wire Zr;
@@ -40,7 +40,7 @@ module logic_unit(
         ALUSrcA,
         ALUSrcB,
         ALU_control,
-        ALU_out,
+        ALUResult,
         Of,
         Ng,
         Zr,
@@ -69,13 +69,14 @@ module logic_unit(
         EXTEND_out
     );
 
-    mux4to1 mux_ALUOut_(
+    mux5to1 mux_ALUOut_(
         M_ALUOut_control,
         ALU_aux,
-        ALU_out,
+        ALUResult,
         SHIFTER_out,
         ALUSrcA,
-        EXTEND_out
+        EXTEND_out,
+        ALUOut
     );
 
     update_UC_gate update_UC_(
