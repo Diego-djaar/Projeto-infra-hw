@@ -1,0 +1,212 @@
+{F:/projeto-infra-hw/Processador Multiciclo/made_parts/update_UC_gate.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/update_UC_gate.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module update_UC_gate
+
+Top level modules:
+	update_UC_gate
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/shift_left_PC.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/shift_left_PC.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module shift_left_PC
+
+Top level modules:
+	shift_left_PC
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_writereg.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_writereg.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux_writereg
+
+Top level modules:
+	mux_writereg
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Instr_Reg.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Instr_Reg.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity Instr_Reg
+-- Compiling architecture behavioral_arch of Instr_Reg
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/cond_sub_4.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/cond_sub_4.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module cond_sub_4
+
+Top level modules:
+	cond_sub_4
+
+} {} {}} {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/control_unit.v} {1 {vlog -work work -stats=none {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/control_unit.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module ALUcontrol
+-- Compiling module control_unit
+
+Top level modules:
+	ALUcontrol
+	control_unit
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/ula32.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/ula32.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity Ula32
+-- Compiling architecture behavioral of Ula32
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/div.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/div.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module div
+
+Top level modules:
+	div
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_writedata.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_writedata.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux_writedata
+
+Top level modules:
+	mux_writedata
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Banco_reg.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Banco_reg.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity Banco_reg
+-- Compiling architecture behavioral_arch of Banco_reg
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/RegDesloc.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/RegDesloc.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity RegDesloc
+-- Compiling architecture behavioral_arch of RegDesloc
+
+} {} {}} {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/mux5to1.v} {1 {vlog -work work -stats=none {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/mux5to1.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux5to1
+
+Top level modules:
+	mux5to1
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/SScontrol.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/SScontrol.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module SScontrol
+
+Top level modules:
+	SScontrol
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Memoria.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Memoria.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Compiling package ram_constants
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package LPM_COMPONENTS
+-- Loading package ram_constants
+-- Compiling entity Memoria
+-- Compiling architecture behavioral_arch of Memoria
+
+} {} {}} {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/logic_unit.v} {1 {vlog -work work -stats=none {C:/Users/Dhay/Documents/projeto-infra-hw/Processador Multiciclo/made_parts/logic_unit.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module logic_unit
+
+Top level modules:
+	logic_unit
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux4to1.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux4to1.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux4to1
+
+Top level modules:
+	mux4to1
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/ALUcontrol.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/ALUcontrol.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module ALUcontrol
+
+Top level modules:
+	ALUcontrol
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Registrador.vhd} {1 {vcom -work work -2002 -explicit -stats=none {F:/projeto-infra-hw/Processador Multiciclo/given_parts/Registrador.vhd}
+Model Technology ModelSim - Intel FPGA Edition vcom 2020.1 Compiler 2020.02 Feb 28 2020
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity Registrador
+-- Compiling architecture behavioral_arch of Registrador
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/shift_left_2.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/shift_left_2.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module shift_left_2
+
+Top level modules:
+	shift_left_2
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/signextend.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/signextend.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module signextend
+
+Top level modules:
+	signextend
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/extender_1_to_32.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/extender_1_to_32.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module extender_1_to_32
+
+Top level modules:
+	extender_1_to_32
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mult.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mult.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mult
+
+Top level modules:
+	mult
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_shifter.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux_shifter.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux_shifter
+
+Top level modules:
+	mux_shifter
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mult2.sv} {1 {vlog -work work -sv -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mult2.sv}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mult
+
+Top level modules:
+	mult
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/cpu.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/cpu.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module cpu
+
+Top level modules:
+	cpu
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/LScontrol.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/LScontrol.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module LScontrol
+
+Top level modules:
+	LScontrol
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/ulaaux.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/ulaaux.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module ulaaux
+
+Top level modules:
+	ulaaux
+
+} {} {}} {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux3to1.v} {1 {vlog -work work -stats=none {F:/projeto-infra-hw/Processador Multiciclo/made_parts/mux3to1.v}
+Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+-- Compiling module mux3to1
+
+Top level modules:
+	mux3to1
+
+} {} {}}
