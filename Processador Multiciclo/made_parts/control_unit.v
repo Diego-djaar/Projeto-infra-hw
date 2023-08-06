@@ -303,7 +303,7 @@ module control_unit (
         end
         ST_R: begin // Instruções do tipo R
             case (STATE_R)
-                STR_ADD, STR_AND, STR_SUB, STR_SRAV, STR_SLT, STR_SLLV: begin
+                STR_ADD, STR_AND, STR_SUB: begin
                     case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
@@ -315,10 +315,7 @@ module control_unit (
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_ADD ? ADD :
                                               STR_AND ? AND :
-                                              STR_SUB ? SUB :
-                                              STR_SRAV ? SHIFT_RA2 :
-                                              STR_SLT ? SLTI :
-                                              STR_SLLV ? SHIFT_L2 : 4'b0000;
+                                              STR_SUB ? SUB : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
                         2: begin
@@ -328,10 +325,44 @@ module control_unit (
                             Banco_reg_w = WRITE;
                             COUNTER = COUNTER + 1;
                         end
-                        3:begin // Esperar escrever
+                        3: begin // Esperar escrever
                             COUNTER = COUNTER + 1;
                         end
-                        4:begin // Ir para pc mais 4
+                        4: begin // Ir para pc mais 4
+                            COUNTER = 0;
+                            STATE = ST_PC_MAIS_4;
+                        end
+                    endcase
+                end
+                STR_SRAV, STR_SLT, STR_SLLV: begin
+                  case (COUNTER)
+                        0: begin
+                            A_reg_w = WRITE;
+                            B_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
+                        end
+                        1: begin
+                            Mux_ALUSrcA = 2'b01;
+                            Mux_ALUSrcB = 2'b00;
+                            ALUOp = STATE_R == STR_SRAV ? SHIFT_RA2 :
+                                              STR_SLT ? SLTI :
+                                              STR_SLLV ? SHIFT_L2 : 4'b0000;
+                            COUNTER = COUNTER + 1;
+                        end
+                        2: begin // Esperar o shifter operar (2 ciclos)
+                            COUNTER = COUNTER + 1;
+                        end
+                        3: begin
+                            A_reg_w = READ;
+                            B_reg_w = READ;
+                            Mux_W_DT = 3'b000;
+                            Banco_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
+                        end
+                        4: begin // Esperar escrever
+                            COUNTER = COUNTER + 1;
+                        end
+                        5: begin // Ir para pc mais 4
                             COUNTER = 0;
                             STATE = ST_PC_MAIS_4;
                         end
