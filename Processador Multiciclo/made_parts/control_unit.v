@@ -370,6 +370,34 @@ module control_unit (
                         end
                     endcase
                 end
+                STR_SLL, STR_SRA, STR_SRL: begin
+                    case (COUNTER)
+                        0: begin
+                            B_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
+                        end
+                        1: begin
+                            Mux_ALUSrcB = 2'b00;
+                            ALUOp = STATE_R == STR_SLL ? SHIFT_L1 :
+                                              STR_SRA ?  SHIFT_RA1:
+                                              STR_SRL ? SHIFT_R : 4'b0000;
+                            COUNTER = COUNTER + 1;
+                        end
+                        2: begin // Esperar escrever
+                            B_reg_w = READ;
+                            Mux_W_DT = 3'b000;
+                            Banco_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
+                        end
+                        3: begin // Esperar escrever
+                            COUNTER = COUNTER + 1;
+                        end
+                        4: begin // Ir para pc mais 4
+                            COUNTER = 0;
+                            STATE = ST_PC_MAIS_4;
+                        end
+                    endcase
+                end
             endcase
         end
       endcase
