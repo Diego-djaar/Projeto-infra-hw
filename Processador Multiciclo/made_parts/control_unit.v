@@ -383,7 +383,7 @@ module control_unit (
                                               STR_SRL ? SHIFT_R : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
-                        2: begin // Esperar escrever
+                        2: begin
                             B_reg_w = READ;
                             Mux_W_DT = 3'b000;
                             Banco_reg_w = WRITE;
@@ -397,6 +397,31 @@ module control_unit (
                             STATE = ST_PC_MAIS_4;
                         end
                     endcase
+                end
+                STR_JR: begin
+                        0: begin
+                            A_reg_w = WRITE;
+                            COUNTER = COUNTER + 1;
+                        end
+                        1: begin
+                            Mux_ALUSrcA = 2'b01;
+                            ALUOp = 4'b0000; // NO_OP que é equivalente a PASS_A
+                            COUNTER = COUNTER + 1;
+                        end
+                        2: begin
+                            A_reg_w = READ;
+                            Mux_PC = 2'b00;
+                            PC_W = 1'b1;
+                            COUNTER = COUNTER + 1;
+                        end
+                        3: begin // Esperar escrever no PC
+                            COUNTER = COUNTER + 1;
+                        end
+                        4: begin // Ir para pc mais 4
+                            COUNTER = 0;
+                            PC_w = 1'b0;
+                            STATE = ST_PC_MAIS_4;
+                        end
                 end
             endcase
         end
