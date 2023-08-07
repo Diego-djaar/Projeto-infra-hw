@@ -412,7 +412,7 @@ module control_unit (
                         2: begin
                             A_reg_w = READ;
                             Mux_PC = 2'b00;
-                            PC_W = 1'b1;
+                            PC_w = 1'b1;
                             COUNTER = COUNTER + 1;
                         end
                         3: begin // Esperar escrever no PC
