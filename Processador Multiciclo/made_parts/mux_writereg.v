@@ -12,6 +12,6 @@ module mux_writereg(
             2'b11: Data_out = 5'b11111; // $31
         endcase
     end
-    assign Data_out = (selector) ? Data_1[15:11] : Data_0; // Falta adicionar os registradores $29 e $31 como entradas
+    //assign Data_out = (selector) ? Data_1[15:11] : Data_0; // Falta adicionar os registradores $29 e $31 como entradas
 
 endmodule
