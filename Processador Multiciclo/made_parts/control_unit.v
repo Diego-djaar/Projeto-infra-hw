@@ -425,6 +425,18 @@ module control_unit (
                         end
                   endcase
                 end
+                STR_MFHI, STR_MFLO: begin
+                  case (COUNTER)
+                    0: begin
+                      // Basta esperar escrever
+                      COUNTER = COUNTER + 1;
+                    end
+                    1: begin
+                      COUNTER = 0;
+                      STATE = ST_PC_MAIS_4;
+                    end
+                  endcase
+                end
             endcase
         end
       endcase
