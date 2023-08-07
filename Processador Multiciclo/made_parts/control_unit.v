@@ -399,6 +399,7 @@ module control_unit (
                     endcase
                 end
                 STR_JR: begin
+                    case(COUNTER)
                         0: begin
                             A_reg_w = WRITE;
                             COUNTER = COUNTER + 1;
@@ -422,6 +423,20 @@ module control_unit (
                             PC_w = 1'b0;
                             STATE = ST_PC_MAIS_4;
                         end
+                  endcase
+                end
+                STR_RTE: begin
+                    case(COUNTER)
+                        0: begin
+                            Mux_PC = 2'b11;
+                            PC_w = 1'b1;
+                            COUNTER = COUNTER + 1;
+                        end
+                        1: begin
+                            COUNTER = 0;
+                            STATE = ST_PC_MAIS_4; // O reset do PC_w vai ser feito no ST_PC_MAIS_R
+                        end
+                    endcase
                 end
             endcase
         end
