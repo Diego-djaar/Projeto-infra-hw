@@ -21,7 +21,7 @@ module logic_unit(
     wire [1:0] ulaaux_control;
 
     // Data wires
-    wire [31:0] ALUResult; // aparente fonte do bug // Talvez necessário??? // Descobri como usar
+    wire [31:0] ALUResult; // Saída da ULA
     wire Of;
     wire Ng;
     wire Zr;

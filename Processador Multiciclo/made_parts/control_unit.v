@@ -316,8 +316,8 @@ module control_unit (
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_ADD ? ADD :
-                                              STR_AND ? AND :
-                                              STR_SUB ? SUB : 4'b0000;
+                                              STATE_R == STR_AND ? AND :
+                                              STATE_R == STR_SUB ? SUB : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
                         2: begin
@@ -347,8 +347,8 @@ module control_unit (
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_SRAV ? SHIFT_RA2 :
-                                              STR_SLT ? SLTI :
-                                              STR_SLLV ? SHIFT_L2 : 4'b0000;
+                                              STATE_R == STR_SLT ? SLTI :
+                                              STATE_R == STR_SLLV ? SHIFT_L2 : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
                         2: begin // Esperar o shifter operar (2 ciclos)
