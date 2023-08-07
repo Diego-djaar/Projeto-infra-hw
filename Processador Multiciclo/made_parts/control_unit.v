@@ -240,6 +240,7 @@ module control_unit (
               Mux_ALUSrcA = 2'b00;
               Mux_ALUSrcB = 2'b01;
               ALUOp = ADD;  // O ADD do ALUcontrol
+              ALUOut_w = WRITE;
               Mux_PC = 2'b01;
               // Soma Counter
               COUNTER = COUNTER + 1'b1;
@@ -295,6 +296,7 @@ module control_unit (
 
 
               // Escreve no PC
+              ALUOut_w = READ;
               IR_w = READ;
               PC_w = WRITE;
               COUNTER = 0;
