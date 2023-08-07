@@ -273,7 +273,7 @@ module control_unit (
                    funct == STR_SRAV ||
                    funct == STR_SLT ||
                    funct == STR_SLLV)
-                  ) Mux_W_RB = 2'01;
+                  ) Mux_W_RB = 2'b01;
               else if (opcode == ST_R && (funct == STR_MFHI || funct == STR_MFLO)) begin
                 Mux_W_RB = 2'b01;
                 Mux_W_DT = funct == STR_MFHI ? 3'b011 : 3'b100;
