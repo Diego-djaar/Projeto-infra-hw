@@ -112,12 +112,12 @@ module ALUcontrol(
                 end
                 SHIFT_L2 : begin // ALUaux
                     ALU_control = 3'b000;
-                    SHIFTER_control = 3'b010;
+                    SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 3'b010;
+                    M_ALUOut_control = 3'b000;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
-                    ulaaux_control = 2'b01;
+                    ulaaux_control = 2'b10;
                 end
                 SHIFT_R : begin
                     if (COUNTER == 1'b0) begin
@@ -150,13 +150,14 @@ module ALUcontrol(
                     end
                 end
                 SHIFT_RA2 : begin // ALUaux
+                    
                     ALU_control = 3'b000;
-                    SHIFTER_control = 3'b010;
+                    SHIFTER_control = 3'b000;
                     M_SHIFTER = 1'b0;
-                    M_ALUOut_control = 3'b010;
+                    M_ALUOut_control = 3'b000;
                     UC_control = 1'b0;
                     UC_op = 2'b00;
-                    ulaaux_control = 2'b1x;
+                    ulaaux_control = 2'b01;
                 end
                 SLTI : begin
                     ALU_control = 3'b111;

@@ -347,8 +347,8 @@ module control_unit (
                         1: begin
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
-                            ALUOp = STATE_R == STR_SRAV ? SHIFT_RA2 :
-                                              STATE_R == STR_SLLV ? SHIFT_L2 : 4'b0000;
+                            ALUOp = STATE_R == STR_SRAV ? SHIFT_RA2 : // shift direita aritmetico
+                                              STATE_R == STR_SLLV ? SHIFT_L2 : 4'b0000; // shift esquerda
                             COUNTER = COUNTER + 1;
                         end
                         2: begin // Esperar o shifter operar (2 ciclos)
