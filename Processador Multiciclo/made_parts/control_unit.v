@@ -305,7 +305,7 @@ module control_unit (
         end
         ST_R: begin // Instruções do tipo R
             case (STATE_R)
-                STR_ADD, STR_AND, STR_SUB, STR_SLT: begin
+                STR_ADD, STR_AND, STR_SUB, STR_SLT: begin // CONCLUÍDO 
                     case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
@@ -337,7 +337,7 @@ module control_unit (
                         end
                     endcase
                 end
-                STR_SRAV, STR_SLLV: begin // Operações de shift
+                STR_SRAV, STR_SLLV: begin // Operações de shift na aluaux CONCLUÍDO
                   case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
@@ -438,7 +438,7 @@ module control_unit (
                         end
                     endcase
                 end
-                STR_MFHI, STR_MFLO: begin
+                STR_MFHI, STR_MFLO: begin // CONCLUÍDO
                   case (COUNTER)
                     0: begin
                       // Basta esperar escrever
