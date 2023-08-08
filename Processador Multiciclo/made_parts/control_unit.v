@@ -305,7 +305,7 @@ module control_unit (
         end
         ST_R: begin // Instruções do tipo R
             case (STATE_R)
-                STR_ADD, STR_AND, STR_SUB: begin
+                STR_ADD, STR_AND, STR_SUB, STR_SLT: begin
                     case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
@@ -317,6 +317,7 @@ module control_unit (
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_ADD ? ADD :
                                               STATE_R == STR_AND ? AND :
+                                              STATE_R == STR_SLT ? SLTI :
                                               STATE_R == STR_SUB ? SUB : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
@@ -336,7 +337,7 @@ module control_unit (
                         end
                     endcase
                 end
-                STR_SRAV, STR_SLT, STR_SLLV: begin
+                STR_SRAV, STR_SLLV: begin // Operações de shift
                   case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
@@ -347,7 +348,6 @@ module control_unit (
                             Mux_ALUSrcA = 2'b01;
                             Mux_ALUSrcB = 2'b00;
                             ALUOp = STATE_R == STR_SRAV ? SHIFT_RA2 :
-                                              STATE_R == STR_SLT ? SLTI :
                                               STATE_R == STR_SLLV ? SHIFT_L2 : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
