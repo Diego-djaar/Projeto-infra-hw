@@ -398,7 +398,7 @@ module control_unit (
                         end
                     endcase
                 end
-                STR_JR: begin
+                STR_JR: begin // CONCLUÍDO
                     case (COUNTER)
                         0: begin
                             A_reg_w = WRITE;
