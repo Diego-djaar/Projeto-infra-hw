@@ -509,6 +509,33 @@ module control_unit (
             end
           endcase
         end
+        ST_ADDI, ST_ADDIU: begin // Não sei o que fazer com o ADDIU para ignorar excessao
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              A_reg_w = READ;
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Esperar escrever
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Ir para pc mais 4
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
