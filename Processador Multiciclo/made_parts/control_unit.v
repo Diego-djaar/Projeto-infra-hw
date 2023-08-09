@@ -284,10 +284,15 @@ module control_unit (
                 Mux_W_RB = 2'b01;
                 Mux_W_DT = 3'b000;
               end else if (opcode == ST_J || opcode == ST_JAL) begin
-                Mux_W_RB = 2'b11;
                 Mux_PC = 2'b10;
                 PC_w = WRITE;
                 if (opcode == ST_J) STATE = ST_PC_MAIS_4;  // Volta para o PC+4
+                else begin
+                  Mux_W_RB = 2'b11;
+                  Mux_ALUSrcA = 2'b00;
+                  ALUOp = NO_OP;
+                  Mux_W_DT = 2'b00;
+                end
               end else if (opcode == ST_R && funct == STR_RTE) begin
                 Mux_PC = 2'b11;
                 PC_w   = WRITE;
@@ -479,8 +484,21 @@ module control_unit (
                 end
             endcase
         end
+        ST_JAL: begin
+          case(COUNTER)
+            0: begin 
+              // 1 ciclo para escrever
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Banco_reg_w = READ;
+              STATE = ST_PC_MAIS_4;
+              COUNTER = 0;
+            end
+          endcase
+        end
       endcase
     end
   end
-
 endmodule
