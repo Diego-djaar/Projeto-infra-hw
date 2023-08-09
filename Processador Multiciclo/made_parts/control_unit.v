@@ -675,6 +675,30 @@ module control_unit (
             end
           endcase
         end
+        LUI: begin
+          case (COUNTER)
+            0: begin
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = LUI;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin // Esperar shifter operar
+              COUNTER = COUNTER + 1;
+            end
+            2: begin
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            2: begin // Esperar pra escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            3: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
