@@ -699,6 +699,33 @@ module control_unit (
             end
           endcase
         end
+        SLTI: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER +  1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = SLTI;
+              COUNTER = COUNTER + 1;
+            end
+            2: begin
+              A_reg_w = READ;
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Esperar para escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            4: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
