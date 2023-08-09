@@ -450,6 +450,32 @@ module control_unit (
                     end
                   endcase
                 end
+                STR_BREAK: begin
+                  case(COUNTER)
+                    0: begin // Faz PC menos 4
+                      Mux_ALUSrcA = 2'b00;
+                      Mux_ALUSrcB = 2'b01;
+                      ALUOp = SUB;
+                      COUNTER = COUNTER + 1;
+                      ALUOut_w = WRITE;
+                      Mux_PC = 2'b01;
+                    end
+                    1: COUNTER = COUNTER + 1; // Escreve em ALUOut_w
+                    2: begin // Escreve no PC
+                      ALUOut_w = READ;
+                      PC_w = WRITE;
+                      COUNTER = COUNTER + 1;
+                    end
+                    3: begin // Espera escrever
+                      COUNTER = COUNTER + 1;
+                    end
+                    4: begin 
+                      STATE = ST_PC_MAIS_4;
+                      PC_w = READ;
+                      COUNTER = 0;
+                    end
+                  endcase
+                end
             endcase
         end
       endcase
