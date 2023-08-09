@@ -5,6 +5,7 @@ module mux_writedata(
     input wire [31:0] Data_2,
     input wire [31:0] Data_3,
     input wire [31:0] Data_4,
+    input wire [31:0] Data_5,
     output reg [31:0] Data_out
 );
     always @(*) begin
@@ -15,6 +16,7 @@ module mux_writedata(
             3'b011: Data_out = Data_3; // $HI
             3'b100: Data_out = Data_4; // $LO
             3'b101: Data_out = 32'd227; // $227
+            3'b110: Data_out = Data_5; // ALUOut_reg
         endcase
     end
 

@@ -289,9 +289,8 @@ module control_unit (
                 if (opcode == ST_J) STATE = ST_PC_MAIS_4;  // Volta para o PC+4
                 else begin
                   Mux_W_RB = 2'b11;
-                  Mux_ALUSrcA = 2'b00;
-                  ALUOp = NO_OP;
-                  Mux_W_DT = 2'b00;
+                  Mux_W_DT = 3'b110;
+                  Banco_reg_w = WRITE;
                 end
               end else if (opcode == ST_R && funct == STR_RTE) begin
                 Mux_PC = 2'b11;
@@ -488,7 +487,6 @@ module control_unit (
           case(COUNTER)
             0: begin 
               // 1 ciclo para escrever
-              Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
             1: begin

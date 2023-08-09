@@ -167,6 +167,7 @@ module cpu(
         MEM_DATA_REG_out,
         HI_out,
         LO_out,
+        ALU_REG_out,
         Mux_W_DATA_out
     );
 
