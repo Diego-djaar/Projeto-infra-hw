@@ -536,6 +536,47 @@ module control_unit (
             end
           endcase
         end
+        ST_BEQ, ST_BNE, ST_BGT, ST_BLE: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              B_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b00;
+              ALUOp = STATE == ST_BEQ ? BEQ:
+                               ST_BNE ? BNE:
+                               ST_BGT ? BGT:
+                               ST_BLE ? BLE: 4'b0000;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              if (update_uc == 1'b0) begin
+                STATE = ST_PC_MAIS_4
+                COUNTER = 0;
+              end
+              else begin
+                A_reg_w = READ;
+                B_reg_w = READ;
+                Mux_ALUSrcA = 2'b00;
+                Mux_ALUSrcB = 2'b11;
+                ALUOp = ADD;
+                COUNTER = COUNTER + 1;
+              end
+            end
+            3: begin
+              PCSorce = 2'b00;
+              PC_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
