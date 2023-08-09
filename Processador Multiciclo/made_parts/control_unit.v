@@ -496,6 +496,19 @@ module control_unit (
             end
           endcase
         end
+        ST_J: begin
+          case (COUNTER)
+            0: begin
+              Mux_PC = 2'b10;
+              PC_w = 1'b1;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              STATE = ST_PC_MAIS_4;
+              COUNTER = 0;
+            end
+          endcase
+        end
       endcase
     end
   end
