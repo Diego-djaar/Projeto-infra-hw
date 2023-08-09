@@ -220,7 +220,7 @@ module control_unit (
               Mux_W_DT = 3'b000;
               //Mux_PC = 2'b00;
               Mux_EXC = 2'b00;
-              ALUOut_w = 1'b0;
+              //ALUOut_w = 1'b0;
               Banco_reg_w = 1'b0;
               A_reg_w = 1'b0;
               B_reg_w = 1'b0;
@@ -453,6 +453,7 @@ module control_unit (
                 STR_BREAK: begin
                   case(COUNTER)
                     0: begin // Faz PC menos 4
+                      PC_w = READ;
                       Mux_ALUSrcA = 2'b00;
                       Mux_ALUSrcB = 2'b01;
                       ALUOp = SUB;
