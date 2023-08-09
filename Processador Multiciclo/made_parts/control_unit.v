@@ -577,6 +577,54 @@ module control_unit (
             end
           endcase
         end
+        ST_LW, ST_LH, ST_LB: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              ALUOut_w = WRITE;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              A_reg_w = READ;
+              Mux_MEM = 2'b01;
+              MEM_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Espera pra ler
+              ALUOut_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Espera pra ler
+              MEM_DATA_REG_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            5: begin
+              LS_control = STATE == ST_LB ? 2'b01:
+                                    ST_LH ? 2'b10:
+                                    ST_LW ? 2'b11: 2'b00;
+              COUNTER = COUNTER + 1;
+            end
+            6: begin
+              MEM_DATA_REG_w = READ;
+              Mux_W_RB = 2'b01;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            7: begin // Esperar para escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            8: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
