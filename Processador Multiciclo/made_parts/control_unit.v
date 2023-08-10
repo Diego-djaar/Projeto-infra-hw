@@ -622,6 +622,223 @@ module control_unit (
             end
           endcase
         end
+        ST_ADDI, ST_ADDIU: begin // Não sei o que fazer com o ADDIU para ignorar excessao
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              A_reg_w = READ;
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Esperar escrever
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Ir para pc mais 4
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
+        ST_BEQ, ST_BNE, ST_BGT, ST_BLE: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              B_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b00;
+              ALUOp = STATE == ST_BEQ ? BEQ:
+                               ST_BNE ? BNE:
+                               ST_BGT ? BGT:
+                               ST_BLE ? BLE: 4'b0000;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              if (update_uc == 1'b0) begin
+                STATE = ST_PC_MAIS_4
+                COUNTER = 0;
+              end
+              else begin
+                A_reg_w = READ;
+                B_reg_w = READ;
+                Mux_ALUSrcA = 2'b00;
+                Mux_ALUSrcB = 2'b11;
+                ALUOp = ADD;
+                COUNTER = COUNTER + 1;
+              end
+            end
+            3: begin
+              PCSorce = 2'b00;
+              PC_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
+        ST_LW, ST_LH, ST_LB: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              ALUOut_w = WRITE;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              A_reg_w = READ;
+              Mux_MEM = 2'b01;
+              MEM_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Espera pra ler
+              ALUOut_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Espera pra ler
+              MEM_DATA_REG_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            5: begin
+              LS_control = STATE == ST_LB ? 2'b01:
+                                    ST_LH ? 2'b10:
+                                    ST_LW ? 2'b11: 2'b00;
+              COUNTER = COUNTER + 1;
+            end
+            6: begin
+              MEM_DATA_REG_w = READ;
+              Mux_W_RB = 2'b01;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            7: begin // Esperar para escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            8: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
+        ST_SW, ST_SH, ST_SB: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              B_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              ALUOut_w = WRITE;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              A_reg_w = READ;
+              B_reg_w = READ;
+              Mux_MEM = 2'b01;
+              MEM_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Espera pra ler
+              ALUOut_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Espera pra ler
+              MEM_DATA_REG_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            5: begin
+              SS_control = STATE == ST_SB ? 2'b01:
+                                    ST_SH ? 2'b10:
+                                    ST_SW ? 2'b11: 2'b00;
+              COUNTER = COUNTER + 1;
+            end
+            6: begin
+              MEM_DATA_REG_w = READ;
+              MEM_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            7: begin // Esperar para escrever na memória
+              COUNTER = COUNTER + 1;
+            end
+            8: begin
+              MEM_w = READ;
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
+        LUI: begin
+          case (COUNTER)
+            0: begin
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = LUI;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin // Esperar shifter operar
+              COUNTER = COUNTER + 1;
+            end
+            2: begin
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            2: begin // Esperar pra escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            3: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
+        SLTI: begin
+          case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              COUNTER = COUNTER +  1;
+            end
+            1: begin
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = SLTI;
+              COUNTER = COUNTER + 1;
+            end
+            2: begin
+              A_reg_w = READ;
+              Mux_W_DT = 3'b000;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Esperar para escrever no RB
+              COUNTER = COUNTER + 1;
+            end
+            4: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
+        end
       endcase
     end
   end
