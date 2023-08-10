@@ -30,6 +30,7 @@ module control_unit (
     output reg [1:0] LS_control,
     output reg [1:0] SS_control,
     output reg DivOp,
+    output reg DivReset,
     output reg DivmOp,
     output reg [3:0] ALUOp
 );
@@ -39,6 +40,7 @@ module control_unit (
   reg [5:0] STATE;
   reg [5:0] STATE_R;
   reg [2:0] COUNTER;
+  reg [9:0] AUX_COUNTER;
 
   // Parâmetros (Constantes)
   // Estados da FSM
@@ -137,6 +139,7 @@ module control_unit (
         LS_control = 2'b00;
         SS_control = 2'b00;
         DivOp = 1'b0;
+        DivReset = 1'b1;
         DivmOp = 1'b0;
         ALUOp = 4'b0000;
         reset_out = 1'b1;
@@ -169,6 +172,7 @@ module control_unit (
         LS_control = 2'b00;
         SS_control = 2'b00;
         DivOp = 1'b0;
+        DivReset = 1'b1;
         DivmOp = 1'b0;
         ALUOp = 4'b0000;
         reset_out = 1'b0;
@@ -204,6 +208,7 @@ module control_unit (
           LS_control = 2'b00;
           SS_control = 2'b00;
           DivOp = 1'b0;
+          DivReset = 1'b1;
           DivmOp = 1'b0;
           ALUOp = 4'b0000;
           reset_out = 1'b0;
@@ -232,6 +237,7 @@ module control_unit (
               LS_control = 2'b00;
               SS_control = 2'b00;
               DivOp = 1'b0;
+              DivReset = 1'b1;
               DivmOp = 1'b0;
               // PC + 4
               Mux_MEM = 1'b0;
@@ -454,7 +460,7 @@ module control_unit (
                     end
                   endcase
                 end
-                STR_BREAK: begin
+                STR_BREAK: begin // CONCLUÍDO
                   case(COUNTER)
                     0: begin // Faz PC menos 4
                       PC_w = READ;
@@ -481,9 +487,40 @@ module control_unit (
                     end
                   endcase
                 end
+                STR_DIV: begin
+                  case (COUNTER)
+                        0: begin
+                          A_reg_w = WRITE;
+                          B_reg_w = WRITE;
+                          COUNTER = COUNTER + 1;
+                          DivReset = 1'b1;
+                        end
+                        1: begin
+                          DivReset = 1'b0;
+                          DivOp = 1;
+                          COUNTER = COUNTER + 1;
+                          AUX_COUNTER = 0;
+                        end
+                        2, 3, 4, 5, 6: begin // Agora é necessário esperar 125 ciclos para concluir a operação
+                          COUNTER = COUNTER + 1;
+                          if (COUNTER == 6) begin
+                            COUNTER = 2;
+                            AUX_COUNTER = AUX_COUNTER + 1;
+                            if (AUX_COUNTER == 10'b1111111111) COUNTER = 7;
+                          end
+                        end
+                        7: begin // Escreve o resultado em HI e LO
+                          HI_reg_w = WRITE;
+                          LO_reg_w = WRITE;
+                          COUNTER = 0;
+                          AUX_COUNTER = 0;
+                          STATE = ST_PC_MAIS_4;
+                        end
+                  endcase
+                end
             endcase
         end
-        ST_JAL: begin
+        ST_JAL: begin // CONCLUÍDO
           case(COUNTER)
             0: begin 
               // 1 ciclo para escrever
@@ -496,7 +533,7 @@ module control_unit (
             end
           endcase
         end
-        ST_J: begin
+        ST_J: begin // CONCLUÍDO
           case (COUNTER)
             0: begin
               Mux_PC = 2'b10;

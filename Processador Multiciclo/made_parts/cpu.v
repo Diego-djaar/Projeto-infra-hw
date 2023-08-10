@@ -31,6 +31,7 @@ module cpu(
     wire [31:0] LScontrol_out;
     wire [1:0] SS_control;
     wire DivOp;
+    wire div_reset;
     wire DivmOp;
     
     //Data wires
@@ -302,6 +303,22 @@ module cpu(
         MEM_in
     );
 
+    wire unused;
+    wire unused1;
+    wire unused2;
+    div divisor(
+        clk,
+        reset | div_reset,
+        DivOp,
+        A_out,
+        B_out,
+        unused,
+        unused1,
+        unused2,
+        LO_in, // val in LO
+        HI_in // rem in HI
+    );
+
     control_unit control_unit_(
         clk,
         reset,
@@ -333,6 +350,7 @@ module cpu(
         LS_control,
         SS_control,
         DivOp,
+        div_reset,
         DivmOp,
         ALUOp
     );

@@ -1,17 +1,18 @@
-`timescale 1ns/1ps
+`timescale 1ps/1ps
 
-module div_tb();
+module div_tb(
+    output reg busy,
+    output reg done,
+    output reg dbz,
+    output reg [31:0] val,
+    output reg [31:0] rem
+);
   
     reg clk;  
     reg rst;  
     reg start;
-    output reg busy;         
-    output reg done;
-    output reg dbz; 
-  reg [31:0] a;
-  reg [31:0] b;
-  output reg [31:0] val;
-  output reg [31:0] rem;
+    reg [31:0] a;
+    reg [31:0] b;
 
 
   integer i,j;
