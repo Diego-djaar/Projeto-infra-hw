@@ -59,7 +59,11 @@ module cpu(
     wire [31:0] MEM_DATA_REG_out;
 
     wire [31:0] HI_in;
+    wire [31:0] HI_in_mult;
+    wire [31:0] HI_in_div;
     wire [31:0] LO_in;
+    wire [31:0] LO_in_mult;
+    wire [31:0] LO_in_div;
 
     wire [31:0] ALUSrcA;
     wire [31:0] ALUSrcB;
@@ -279,16 +283,30 @@ module cpu(
         MEM_DATA_REG_out
     );
 
-    // mult mult_(
-    //     clk,
-    //     reset,
-    //     A_out,
-    //     B_out,
-    //     mult_control,
-    //     HI_in,
-    //     LO_in,
-    //     mult_end
-    // );
+    mux2to1 div_mult_hi_(
+        DivOp | DivmOp,
+        HI_in_mult,
+        HI_in_div,
+        HI_in
+    );
+
+    mux2to1 div_mult_lo_(
+        DivOp | DivmOp,
+        LO_in_mult,
+        LO_in_div,
+        LO_in
+    );
+
+    mult mult_(
+        clk,
+        reset,
+        A_out,
+        B_out,
+        mult_control,
+        HI_in_mult,
+        LO_in_mult,
+        mult_end
+    );
 
     LScontrol LScontrol_(
         MEM_DATA_REG_out,
@@ -315,8 +333,8 @@ module cpu(
         unused,
         divisor_done,
         unused2,
-        LO_in, // val in LO
-        HI_in // rem in HI
+        LO_in_div, // val in LO
+        HI_in_div // rem in HI
     );
 
     control_unit control_unit_(

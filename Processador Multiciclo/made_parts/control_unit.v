@@ -507,9 +507,12 @@ module control_unit (
                           HI_reg_w = WRITE;
                           LO_reg_w = WRITE;
                           COUNTER = COUNTER + 1;
-                          STATE = ST_PC_MAIS_4;
                         end
                         4: begin // Escrito
+                          HI_reg_w = READ;
+                          LO_reg_w = READ;
+                          DivOp = 0;
+                          DivReset = 1;
                           COUNTER = 0;
                           STATE = ST_PC_MAIS_4;
                         end
