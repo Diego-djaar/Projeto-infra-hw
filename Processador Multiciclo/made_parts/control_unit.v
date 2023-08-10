@@ -6,6 +6,7 @@ module control_unit (
     input wire [5:0] opcode,
     input wire [5:0] funct,
     input wire divisor_done,
+    input wire [1:0] excessao_in,
     output reg reset_out,
     output reg PC_w,
     output reg PC_w_cond,
@@ -35,9 +36,14 @@ module control_unit (
     output reg [2:0] DivmOp,
     output reg [3:0] ALUOp
 );
+  // Excessão
+  reg ignorar_exc;
+  reg exc_opcode;
+  reg [1:0] excessao;
+
+  always @(posedge clk) if(excessao_in != 0) excessao = excessao_in;
 
   // Variáveis
-
   reg [5:0] STATE;
   reg [5:0] STATE_R;
   reg [3:0] COUNTER;
@@ -47,6 +53,7 @@ module control_unit (
   parameter ST_PC_MAIS_4 = 6'h3F;
   parameter ST_RESET = 6'h3E;
   parameter ST_WAIT_MEM = 6'h3D;
+  parameter ST_EXC = 6'h3C;
   // Opcodes e functs
   parameter ST_R = 6'h0;
   parameter STR_ADD = 6'h20;
@@ -116,6 +123,9 @@ module control_unit (
       if (STATE != ST_RESET) begin
         STATE = ST_RESET;
         // Resetando todos os sinais
+        exc_opcode = 1'b0;
+        excessao = 2'b00;
+        ignorar_exc = 1'b0;
         PC_w = 1'b0;
         PC_w_cond = 1'b0;
         EPC_w = 1'b0;
@@ -149,6 +159,9 @@ module control_unit (
       end else begin
         STATE = ST_PC_MAIS_4;
         // Resetando todos os sinais
+        exc_opcode = 1'b0;
+        excessao = 2'b00;
+        ignorar_exc = 1'b0;
         PC_w = 1'b0;
         PC_w_cond = 1'b0;
         EPC_w = 1'b0;
@@ -185,6 +198,9 @@ module control_unit (
         ST_RESET: begin
           STATE = ST_PC_MAIS_4;
           // Resetando todos os sinais
+          exc_opcode = 1'b0;
+          excessao = 2'b00;
+          ignorar_exc = 1'b0;
           PC_w = 1'b0;
           PC_w_cond = 1'b0;
           EPC_w = 1'b0;
@@ -219,6 +235,7 @@ module control_unit (
         ST_PC_MAIS_4: begin
           case (COUNTER)
             0: begin  // soft reset e pc + 4
+              exc_opcode = 1'b0;
               PC_w = 1'b0;
               PC_w_cond = 1'b0;
               EPC_w = 1'b0;
@@ -240,17 +257,28 @@ module control_unit (
               DivOp = 1'b0;
               DivReset = 1'b1;
               DivmOp = 3'b000;
-              // PC + 4
-              Mux_MEM = 1'b0;
-              MEM_w = READ;
-              IR_w = WRITE;
-              Mux_ALUSrcA = 2'b00;
-              Mux_ALUSrcB = 2'b01;
-              ALUOp = ADD;  // O ADD do ALUcontrol
-              ALUOut_w = WRITE;
-              Mux_PC = 2'b01;
-              // Soma Counter
-              COUNTER = COUNTER + 1;
+
+              if (excessao != 0 && !ignorar_exc) begin // Iniciar tratamento de excessão
+                COUNTER = 0;
+                STATE = ST_EXC;
+                MEM_w = READ;
+                IR_w = READ;
+                ALUOut_w = READ;
+              end else begin
+                // PC + 4
+                ignorar_exc = 1'b0;
+                excessao = 2'b00;
+                Mux_MEM = 1'b0;
+                MEM_w = READ;
+                IR_w = WRITE;
+                Mux_ALUSrcA = 2'b00;
+                Mux_ALUSrcB = 2'b01;
+                ALUOp = ADD;  // O ADD do ALUcontrol
+                ALUOut_w = WRITE;
+                Mux_PC = 2'b01;
+                // Soma Counter
+                COUNTER = COUNTER + 1;
+              end
             end
             1: begin  // Estado vazio, lendo a memória
               COUNTER = COUNTER + 1;
@@ -488,7 +516,7 @@ module control_unit (
                     end
                   endcase
                 end
-                STR_DIV: begin
+                STR_DIV: begin // CONClUÍDO
                   case (COUNTER)
                         0: begin
                           A_reg_w = WRITE;
@@ -519,7 +547,7 @@ module control_unit (
                         end
                   endcase
                 end
-                STR_DIVM: begin
+                STR_DIVM: begin // CONCLUÍDO
                   case (COUNTER)
                     0: begin // Escrever nos registradores A e B
                       A_reg_w = WRITE;
@@ -622,9 +650,10 @@ module control_unit (
             end
           endcase
         end
-        ST_ADDI, ST_ADDIU: begin // Não sei o que fazer com o ADDIU para ignorar excessao
+        ST_ADDI, ST_ADDIU: begin // ADDIU ignora excessão
           case (COUNTER)
             0: begin
+              if (STATE == ST_ADDIU) ignorar_exc = 1;
               A_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
@@ -667,7 +696,7 @@ module control_unit (
               end
             2: begin
               if (update_uc == 1'b0) begin
-                STATE = ST_PC_MAIS_4
+                STATE = ST_PC_MAIS_4;
                 COUNTER = 0;
               end
               else begin
@@ -680,7 +709,7 @@ module control_unit (
               end
             end
             3: begin
-              PCSorce = 2'b00;
+              Mux_PC = 2'b00;
               PC_w = WRITE;
               COUNTER = COUNTER + 1;
             end
@@ -838,6 +867,20 @@ module control_unit (
               STATE = ST_PC_MAIS_4;
             end
           endcase
+        end
+        ST_EXC: begin
+          // Subtrair 4 do valor em PC e então armazenar em EPC
+          // Buscar na memória o byte no endereço 253 (exc_opcode), 254 (excessao[1]) ou 255 (excessao[0])
+          // Extender para 32 bits e armazenar em PC
+          case (COUNTER)
+            0: begin 
+            end
+          endcase
+        end
+        default: begin // Opcode inexistente
+          COUNTER = 0;
+          STATE = ST_EXC;
+          exc_opcode = 1;
         end
       endcase
     end

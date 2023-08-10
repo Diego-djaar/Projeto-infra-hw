@@ -58,6 +58,7 @@ module cpu(
     wire [31:0] B_out;
     wire [31:0] MEM_DATA_REG_out;
 
+    wire exc_divby0;
     wire [31:0] HI_in;
     wire [31:0] HI_in_mult;
     wire [31:0] HI_in_div;
@@ -70,7 +71,7 @@ module cpu(
 
     wire [3:0] ALUOp;
     wire SPECIAL;
-    wire OVERFLOW;
+    wire exc_overflow;
     wire ZERO;
     wire [31:0] ALUOut;
     wire Update_UC;
@@ -261,7 +262,7 @@ module cpu(
         OFFSET[15:11], // SHAMT
         ALUOp, // 4 bits
         SPECIAL,
-        OVERFLOW,
+        exc_overflow,
         ZERO,
         ALUOut,
         Update_UC
@@ -353,7 +354,7 @@ module cpu(
         Div_b,
         unused,
         divisor_done,
-        unused2,
+        exc_divby0,
         LO_in_div, // val in LO
         HI_in_div // rem in HI
     );
@@ -377,6 +378,7 @@ module cpu(
         OPCODE,
         OFFSET[5:0],
         divisor_done,
+        {exc_overflow, exc_divby0},
         RESET_OUT,
         PC_w,
         PC_w_cond,
