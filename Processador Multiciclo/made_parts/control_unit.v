@@ -5,6 +5,7 @@ module control_unit (
     input wire update_uc,
     input wire [5:0] opcode,
     input wire [5:0] funct,
+    input wire divisor_done,
     output reg reset_out,
     output reg PC_w,
     output reg PC_w_cond,
@@ -40,7 +41,6 @@ module control_unit (
   reg [5:0] STATE;
   reg [5:0] STATE_R;
   reg [2:0] COUNTER;
-  reg [9:0] AUX_COUNTER;
 
   // Parâmetros (Constantes)
   // Estados da FSM
@@ -499,21 +499,18 @@ module control_unit (
                           DivReset = 1'b0;
                           DivOp = 1;
                           COUNTER = COUNTER + 1;
-                          AUX_COUNTER = 0;
                         end
-                        2, 3, 4, 5, 6: begin // Agora é necessário esperar 125 ciclos para concluir a operação
-                          COUNTER = COUNTER + 1;
-                          if (COUNTER == 6) begin
-                            COUNTER = 2;
-                            AUX_COUNTER = AUX_COUNTER + 1;
-                            if (AUX_COUNTER == 10'b1111111111) COUNTER = 7;
-                          end
+                        2: begin // Agora esperar até divisor done
+                          if (divisor_done) COUNTER = COUNTER + 1;
                         end
-                        7: begin // Escreve o resultado em HI e LO
+                        3: begin // Escreve o resultado em HI e LO
                           HI_reg_w = WRITE;
                           LO_reg_w = WRITE;
+                          COUNTER = COUNTER + 1;
+                          STATE = ST_PC_MAIS_4;
+                        end
+                        4: begin // Escrito
                           COUNTER = 0;
-                          AUX_COUNTER = 0;
                           STATE = ST_PC_MAIS_4;
                         end
                   endcase

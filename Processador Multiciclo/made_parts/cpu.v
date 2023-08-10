@@ -279,16 +279,16 @@ module cpu(
         MEM_DATA_REG_out
     );
 
-    mult mult_(
-        clk,
-        reset,
-        A_out,
-        B_out,
-        mult_control,
-        HI_in,
-        LO_in,
-        mult_end
-    );
+    // mult mult_(
+    //     clk,
+    //     reset,
+    //     A_out,
+    //     B_out,
+    //     mult_control,
+    //     HI_in,
+    //     LO_in,
+    //     mult_end
+    // );
 
     LScontrol LScontrol_(
         MEM_DATA_REG_out,
@@ -304,7 +304,7 @@ module cpu(
     );
 
     wire unused;
-    wire unused1;
+    wire divisor_done;
     wire unused2;
     div divisor(
         clk,
@@ -313,7 +313,7 @@ module cpu(
         A_out,
         B_out,
         unused,
-        unused1,
+        divisor_done,
         unused2,
         LO_in, // val in LO
         HI_in // rem in HI
@@ -325,6 +325,7 @@ module cpu(
         Update_UC,
         OPCODE,
         OFFSET[5:0],
+        divisor_done,
         RESET_OUT,
         PC_w,
         PC_w_cond,
