@@ -16,7 +16,7 @@ module control_unit (
     output reg [1:0] Mux_W_RB,
     output reg [2:0] Mux_W_DT,
     output reg [1:0] Mux_MEM,
-    output reg [1:0] Mux_PC,
+    output reg [2:0] Mux_PC,
     output reg [1:0] Mux_ALUSrcA,
     output reg [1:0] Mux_ALUSrcB,
     output reg [1:0] Mux_EXC,
@@ -134,7 +134,7 @@ module control_unit (
         Mux_W_RB = 2'b00;
         Mux_W_DT = 3'b000;
         Mux_MEM = 2'b00;
-        Mux_PC = 2'b00;
+        Mux_PC = 3'b000;
         Mux_ALUSrcA = 2'b00;
         Mux_ALUSrcB = 2'b00;
         Mux_EXC = 2'b00;
@@ -170,7 +170,7 @@ module control_unit (
         Mux_W_RB = 2'b00;
         Mux_W_DT = 3'b000;
         Mux_MEM = 2'b00;
-        Mux_PC = 2'b00;
+        Mux_PC = 3'b000;
         Mux_ALUSrcA = 2'b00;
         Mux_ALUSrcB = 2'b00;
         Mux_EXC = 2'b00;
@@ -209,7 +209,7 @@ module control_unit (
           Mux_W_RB = 2'b00;
           Mux_W_DT = 3'b000;
           Mux_MEM = 2'b00;
-          Mux_PC = 2'b00;
+          Mux_PC = 3'b000;
           Mux_ALUSrcA = 2'b00;
           Mux_ALUSrcB = 2'b00;
           Mux_EXC = 2'b00;
@@ -241,7 +241,7 @@ module control_unit (
               EPC_w = 1'b0;
               Mux_W_RB = 2'b00;
               Mux_W_DT = 3'b000;
-              //Mux_PC = 2'b00;
+              //Mux_PC = 3'b000;
               Mux_EXC = 2'b00;
               //ALUOut_w = 1'b0;
               Banco_reg_w = 1'b0;
@@ -275,7 +275,7 @@ module control_unit (
                 Mux_ALUSrcB = 2'b01;
                 ALUOp = ADD;  // O ADD do ALUcontrol
                 ALUOut_w = WRITE;
-                Mux_PC = 2'b01;
+                Mux_PC = 3'b001;
                 // Soma Counter
                 COUNTER = COUNTER + 1;
               end
@@ -319,7 +319,7 @@ module control_unit (
                 Mux_W_RB = 2'b01;
                 Mux_W_DT = 3'b000;
               end else if (opcode == ST_J || opcode == ST_JAL) begin
-                Mux_PC = 2'b10;
+                Mux_PC = 3'b010;
                 PC_w = WRITE;
                 if (opcode == ST_J) STATE = ST_PC_MAIS_4;  // Volta para o PC+4
                 else begin
@@ -328,7 +328,7 @@ module control_unit (
                   Banco_reg_w = WRITE;
                 end
               end else if (opcode == ST_R && funct == STR_RTE) begin
-                Mux_PC = 2'b11;
+                Mux_PC = 3'b011;
                 PC_w   = WRITE;
                 STATE  = ST_PC_MAIS_4;  // Volta para o PC+4
               end
@@ -450,7 +450,7 @@ module control_unit (
                         end
                         2: begin
                             A_reg_w = READ;
-                            Mux_PC = 2'b00;
+                            Mux_PC = 3'b000;
                             PC_w = 1'b1;
                             COUNTER = COUNTER + 1;
                         end
@@ -467,7 +467,7 @@ module control_unit (
                 STR_RTE: begin
                     case(COUNTER)
                         0: begin
-                            Mux_PC = 2'b11;
+                            Mux_PC = 3'b011;
                             PC_w = 1'b1;
                             COUNTER = COUNTER + 1;
                         end
@@ -498,7 +498,7 @@ module control_unit (
                       ALUOp = SUB;
                       COUNTER = COUNTER + 1;
                       ALUOut_w = WRITE;
-                      Mux_PC = 2'b01;
+                      Mux_PC = 3'b001;
                     end
                     1: COUNTER = COUNTER + 1; // Escreve em ALUOut_w
                     2: begin // Escreve no PC
@@ -610,6 +610,11 @@ module control_unit (
                     end
                   endcase
                 end
+                default: begin // Opcode inexistente
+                  COUNTER = 0;
+                  STATE = ST_EXC;
+                  exc_opcode = 1;
+                end
             endcase
         end
         ST_WAIT_MEM: begin // Espera 2 ciclos para a memória ser escrita com PC
@@ -640,7 +645,7 @@ module control_unit (
         ST_J: begin // CONCLUÍDO
           case (COUNTER)
             0: begin
-              Mux_PC = 2'b10;
+              Mux_PC = 3'b010;
               PC_w = 1'b1;
               COUNTER = COUNTER + 1;
             end
@@ -709,7 +714,7 @@ module control_unit (
               end
             end
             3: begin
-              Mux_PC = 2'b00;
+              Mux_PC = 3'b000;
               PC_w = WRITE;
               COUNTER = COUNTER + 1;
             end
@@ -873,7 +878,36 @@ module control_unit (
           // Buscar na memória o byte no endereço 253 (exc_opcode), 254 (excessao[1]) ou 255 (excessao[0])
           // Extender para 32 bits e armazenar em PC
           case (COUNTER)
-            0: begin 
+            0: begin // Faz PC menos 4
+              PC_w = READ;
+              Mux_ALUSrcA = 2'b00;
+              Mux_ALUSrcB = 2'b01;
+              ALUOp = SUB;
+              COUNTER = COUNTER + 1;
+              ALUOut_w = WRITE;
+              Mux_PC = 3'b100;
+              Mux_MEM = 2'b11;
+              if (exc_opcode) Mux_EXC = 2'b00; // Opcode inexistente
+              else if (excessao[1]) Mux_EXC = 2'b01; // Overflow
+              else if (excessao[0]) Mux_EXC = 2'b10; // Div by 0
+            end
+            1: COUNTER = COUNTER + 1; // Escreve em ALUOut_w e espera ler memória
+            2: begin // Escreve no EPC e no PC
+              ALUOut_w = READ;
+              EPC_w = WRITE;
+              PC_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Espera escrever
+              COUNTER = COUNTER + 1;
+            end
+            4: begin 
+              STATE = ST_PC_MAIS_4;
+              excessao = 0;
+              exc_opcode = 0;
+              PC_w = READ;
+              EPC_w = READ;
+              COUNTER = 0;
             end
           endcase
         end

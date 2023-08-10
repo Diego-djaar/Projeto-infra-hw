@@ -6,7 +6,7 @@ module logic_unit(
     input wire [4:0] SHAMT,
     input wire [3:0] ALUOp,
     output reg SPECIAL,
-    output reg OVERFLOW,
+    output wire OVERFLOW,
     output reg ZERO,
     output wire [31:0] ALUOut,
     output wire Update_UC
@@ -41,7 +41,7 @@ module logic_unit(
         ALUSrcB,
         ALU_control,
         ALUResult,
-        Of,
+        OVERFLOW,
         Ng,
         Zr,
         Eq,

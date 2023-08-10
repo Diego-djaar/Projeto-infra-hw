@@ -14,7 +14,7 @@ module cpu(
     wire [1:0] Mux_W_RB;
     wire [2:0] Mux_W_DT;
     wire [1:0] Mux_MEM;
-    wire [1:0] Mux_PC;
+    wire [2:0] Mux_PC;
     wire [1:0] Mux_ALUSrcA;
     wire [1:0] Mux_ALUSrcB;
     wire [1:0] Mux_EXC;
@@ -91,12 +91,13 @@ module cpu(
     wire [31:0] HI_out;
     wire [31:0] LO_out;
 
-    mux4to1 mux_PC_(
+    mux5to1 mux_PC_(
         Mux_PC,
         ALUOut,
         ALU_REG_out,
         shift_PC_out,
         EPC_out,
+        {{24{1'b0}},MEM_out[7:0]}, // 8 bits menos significativos, extendidos para 32
         Mux_PC_out
     );
 
