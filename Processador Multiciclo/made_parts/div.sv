@@ -19,7 +19,7 @@ module div(
   reg [6:0] i;
   reg neg;
 
-initial busy = 1'b0; // -------- mais 
+  initial busy = 1'b0; // -------- mais 
 
   always @(posedge clk) begin
     if (start && !busy && !done) begin
