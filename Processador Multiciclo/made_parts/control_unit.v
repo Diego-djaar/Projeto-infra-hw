@@ -788,7 +788,7 @@ module control_unit (
             end
           endcase
         end
-        LUI: begin
+        ST_LUI: begin
           case (COUNTER)
             0: begin
               Mux_ALUSrcB = 2'b10;
@@ -812,7 +812,7 @@ module control_unit (
             end
           endcase
         end
-        SLTI: begin
+        ST_SLTI: begin
           case (COUNTER)
             0: begin
               A_reg_w = WRITE;
