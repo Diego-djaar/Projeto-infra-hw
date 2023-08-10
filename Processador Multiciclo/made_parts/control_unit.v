@@ -32,7 +32,7 @@ module control_unit (
     output reg [1:0] SS_control,
     output reg DivOp,
     output reg DivReset,
-    output reg DivmOp,
+    output reg [2:0] DivmOp,
     output reg [3:0] ALUOp
 );
 
@@ -40,12 +40,13 @@ module control_unit (
 
   reg [5:0] STATE;
   reg [5:0] STATE_R;
-  reg [2:0] COUNTER;
+  reg [3:0] COUNTER;
 
   // Parâmetros (Constantes)
   // Estados da FSM
   parameter ST_PC_MAIS_4 = 6'h3F;
   parameter ST_RESET = 6'h3E;
+  parameter ST_WAIT_MEM = 6'h3D;
   // Opcodes e functs
   parameter ST_R = 6'h0;
   parameter STR_ADD = 6'h20;
@@ -140,11 +141,11 @@ module control_unit (
         SS_control = 2'b00;
         DivOp = 1'b0;
         DivReset = 1'b1;
-        DivmOp = 1'b0;
+        DivmOp = 3'b000;
         ALUOp = 4'b0000;
         reset_out = 1'b1;
         // Resetando o contador para 0
-        COUNTER = 3'b000;
+        COUNTER = 4'b0000;
       end else begin
         STATE = ST_PC_MAIS_4;
         // Resetando todos os sinais
@@ -173,11 +174,11 @@ module control_unit (
         SS_control = 2'b00;
         DivOp = 1'b0;
         DivReset = 1'b1;
-        DivmOp = 1'b0;
+        DivmOp = 3'b000;
         ALUOp = 4'b0000;
         reset_out = 1'b0;
         // Resetando o contador para 0
-        COUNTER = 3'b000;
+        COUNTER = 4'b0000;
       end
     end else begin
       case (STATE)
@@ -209,11 +210,11 @@ module control_unit (
           SS_control = 2'b00;
           DivOp = 1'b0;
           DivReset = 1'b1;
-          DivmOp = 1'b0;
+          DivmOp = 3'b000;
           ALUOp = 4'b0000;
           reset_out = 1'b0;
           // Resetando o contador para 0
-          COUNTER = 3'b000;
+          COUNTER = 4'b0000;
         end
         ST_PC_MAIS_4: begin
           case (COUNTER)
@@ -238,7 +239,7 @@ module control_unit (
               SS_control = 2'b00;
               DivOp = 1'b0;
               DivReset = 1'b1;
-              DivmOp = 1'b0;
+              DivmOp = 3'b000;
               // PC + 4
               Mux_MEM = 1'b0;
               MEM_w = READ;
@@ -249,10 +250,10 @@ module control_unit (
               ALUOut_w = WRITE;
               Mux_PC = 2'b01;
               // Soma Counter
-              COUNTER = COUNTER + 1'b1;
+              COUNTER = COUNTER + 1;
             end
             1: begin  // Estado vazio, lendo a memória
-              COUNTER = COUNTER + 1'b1;
+              COUNTER = COUNTER + 1;
             end
             2: begin  // Segundo ciclo
               // Ler instrução
@@ -495,7 +496,7 @@ module control_unit (
                           COUNTER = COUNTER + 1;
                           DivReset = 1'b1;
                         end
-                        1: begin
+                        1: begin // Inicia divisão
                           DivReset = 1'b0;
                           DivOp = 1;
                           COUNTER = COUNTER + 1;
@@ -518,7 +519,82 @@ module control_unit (
                         end
                   endcase
                 end
+                STR_DIVM: begin
+                  case (COUNTER)
+                    0: begin // Escrever nos registradores A e B
+                      A_reg_w = WRITE;
+                      B_reg_w = WRITE;
+                      COUNTER = COUNTER + 1;
+                      DivReset = 1'b1;
+                    end
+                    1: begin // Escrever A e B nos registradores internos
+                      DivmOp = 1;
+                      Mux_MEM = 2'b10; // divm_sh
+                      COUNTER = COUNTER + 1;
+                    end
+                    2: begin // Enviar A para ler na memória
+                      DivmOp = 2;
+                      COUNTER = COUNTER + 1;
+                    end
+                    3: begin // Esperar ler
+                      COUNTER = COUNTER + 1;
+                    end
+                    4: begin // Ler memória e por em Reg_A e enviar B para ler na memória
+                      DivmOp = 3;
+                      COUNTER = COUNTER + 1;
+                    end
+                    5: begin // Espera atualizar memória
+                      DivmOp = 4;
+                      COUNTER = COUNTER + 1;
+                    end
+                    6: begin // Esperar ler
+                      COUNTER = COUNTER + 1;
+                    end
+                    7: begin // Ler memória e por em Reg_B
+                      DivmOp = 5;
+                      COUNTER = COUNTER + 1;
+                    end
+                    8: begin // Ler ambos para dividir
+                    DivmOp = 6;
+                      COUNTER = COUNTER + 1;
+                    end
+                    9: begin // Inicia divisão
+                      DivReset = 1'b0;
+                      DivOp = 1;
+                      COUNTER = COUNTER + 1;
+                    end
+                    10: begin // Agora esperar até divisor done
+                      if (divisor_done) COUNTER = COUNTER + 1;
+                    end
+                    11: begin // Escreve o resultado em HI e LO
+                      HI_reg_w = WRITE;
+                      LO_reg_w = WRITE;
+                      COUNTER = COUNTER + 1;
+                    end
+                    12: begin // Escrito
+                      HI_reg_w = READ;
+                      LO_reg_w = READ;
+                      DivOp = 0;
+                      DivReset = 1;
+                      COUNTER = 0;
+                      DivmOp = 01;
+                      STATE = ST_WAIT_MEM;
+                    end
+                  endcase
+                end
             endcase
+        end
+        ST_WAIT_MEM: begin // Espera 2 ciclos para a memória ser escrita com PC
+          case (COUNTER)
+            0: begin
+              Mux_MEM = 2'b00;
+              COUNTER = COUNTER + 1;
+            end
+            1: begin
+              COUNTER = 0;
+              STATE = ST_PC_MAIS_4;
+            end
+          endcase
         end
         ST_JAL: begin // CONCLUÍDO
           case(COUNTER)

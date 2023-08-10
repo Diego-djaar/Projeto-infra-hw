@@ -32,7 +32,7 @@ module cpu(
     wire [1:0] SS_control;
     wire DivOp;
     wire div_reset;
-    wire DivmOp;
+    wire [2:0] DivmOp;
     
     //Data wires
     wire [31:0] ULA_out;
@@ -247,7 +247,7 @@ module cpu(
     mux4to1 mux_ALUSrcB_(
         Mux_ALUSrcB,
         B_out,
-        32'd4, // Não sei se pode isso
+        32'd4, // 4
         extend_out,
         shift_out,
         ALUSrcB
@@ -284,14 +284,14 @@ module cpu(
     );
 
     mux2to1 div_mult_hi_(
-        DivOp | DivmOp,
+        DivOp | (DivmOp!=0),
         HI_in_mult,
         HI_in_div,
         HI_in
     );
 
     mux2to1 div_mult_lo_(
-        DivOp | DivmOp,
+        DivOp | (DivmOp!=0),
         LO_in_mult,
         LO_in_div,
         LO_in
@@ -324,17 +324,50 @@ module cpu(
     wire unused;
     wire divisor_done;
     wire unused2;
-    div divisor(
+
+    wire [31:0] Div_a;
+    wire [31:0] Div_b;
+
+    wire [31:0] Divm_a_out;
+    wire [31:0] Divm_b_out;
+
+    mux2to1 div_a_(
+        DivmOp != 0,
+        A_out,
+        Divm_a_out,
+        Div_a
+    );
+
+    mux2to1 div_b_(
+        DivmOp != 0,
+        B_out,
+        Divm_b_out,
+        Div_b
+    );
+
+    div divisor_(
         clk,
         reset | div_reset,
         DivOp,
-        A_out,
-        B_out,
+        Div_a,
+        Div_b,
         unused,
         divisor_done,
         unused2,
         LO_in_div, // val in LO
         HI_in_div // rem in HI
+    );
+
+    Divm_special_handler divm_sh_(
+        clk,
+        reset,
+        MEM_out,
+        A_out,
+        B_out,
+        DivmOp,
+        DIVM_out,
+        Divm_a_out,
+        Divm_b_out
     );
 
     control_unit control_unit_(

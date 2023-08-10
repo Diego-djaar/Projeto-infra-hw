@@ -19,7 +19,7 @@ module Divm_special_handler(
 
     always @(posedge clk) begin
         case (DivmOp)
-            0, 2, 4, 6: begin //Comum & // Enviar A para ler na memória & // Espera atualizar memória & // Ler ambos para dividr
+            0, 2: begin //Comum & // Enviar A para ler na memória
                 seletor_A = 0;
                 seletor_B = 0;
                 seletor_MEM = 0;
@@ -38,6 +38,13 @@ module Divm_special_handler(
                 seletor_B = 0;
                 seletor_MEM = 1;
                 A_w = 1;
+                B_w = 0;
+            end
+            4, 6: begin // Enviar B para ler na memória & // Ler ambos para dividr
+                seletor_A = 0;
+                seletor_B = 0;
+                seletor_MEM = 1;
+                A_w = 0;
                 B_w = 0;
             end
             5: begin // Ler memória e por em Reg_B
