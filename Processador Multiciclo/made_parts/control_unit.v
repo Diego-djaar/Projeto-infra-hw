@@ -901,8 +901,8 @@ module control_unit (
             3: begin // Espera escrever
               COUNTER = COUNTER + 1;
             end
-            4: begin 
-              STATE = ST_PC_MAIS_4;
+            4: begin
+              STATE = ST_WAIT_MEM;
               excessao = 0;
               exc_opcode = 0;
               PC_w = READ;
