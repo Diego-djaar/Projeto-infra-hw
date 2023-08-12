@@ -772,8 +772,10 @@ module control_unit (
             0: begin
               A_reg_w = WRITE;
               COUNTER = COUNTER + 1;
+              PC_w = READ;
             end
             1: begin
+              A_reg_w = READ;
               Mux_ALUSrcA = 2'b01;
               Mux_ALUSrcB = 2'b10;
               ALUOp = ADD;
@@ -781,6 +783,7 @@ module control_unit (
               COUNTER = COUNTER + 1;
               end
             2: begin
+              ALUOut_w = READ;
               A_reg_w = READ;
               Mux_MEM = 2'b01;
               MEM_w = READ;
@@ -796,8 +799,8 @@ module control_unit (
             end
             5: begin
               LS_control = STATE == ST_LB ? 2'b01:
-                                    ST_LH ? 2'b10:
-                                    ST_LW ? 2'b11: 2'b00;
+                          STATE == ST_LH ? 2'b10:
+                          STATE == ST_LW ? 2'b11: 2'b00;
               COUNTER = COUNTER + 1;
             end
             6: begin
@@ -810,8 +813,9 @@ module control_unit (
               COUNTER = COUNTER + 1;
             end
             8: begin
+              Banco_reg_w = READ;
               COUNTER = 0;
-              STATE = ST_PC_MAIS_4;
+              STATE = ST_WAIT_MEM;
             end
           endcase
         end
@@ -820,9 +824,12 @@ module control_unit (
             0: begin
               A_reg_w = WRITE;
               B_reg_w = WRITE;
+              PC_w = READ;
               COUNTER = COUNTER + 1;
             end
             1: begin
+              A_reg_w = READ;
+              B_reg_w = READ;
               Mux_ALUSrcA = 2'b01;
               Mux_ALUSrcB = 2'b10;
               ALUOp = ADD;
@@ -830,14 +837,12 @@ module control_unit (
               COUNTER = COUNTER + 1;
               end
             2: begin
-              A_reg_w = READ;
-              B_reg_w = READ;
+              ALUOut_w = READ;
               Mux_MEM = 2'b01;
               MEM_w = READ;
               COUNTER = COUNTER + 1;
             end
             3: begin // Espera pra ler
-              ALUOut_w = READ;
               COUNTER = COUNTER + 1;
             end
             4: begin // Espera pra ler
@@ -846,8 +851,8 @@ module control_unit (
             end
             5: begin
               SS_control = STATE == ST_SB ? 2'b01:
-                                    ST_SH ? 2'b10:
-                                    ST_SW ? 2'b11: 2'b00;
+                              STATE == ST_SH ? 2'b10:
+                              STATE == ST_SW ? 2'b11: 2'b00;
               COUNTER = COUNTER + 1;
             end
             6: begin
@@ -861,13 +866,14 @@ module control_unit (
             8: begin
               MEM_w = READ;
               COUNTER = 0;
-              STATE = ST_PC_MAIS_4;
+              STATE = ST_WAIT_MEM;
             end
           endcase
         end
         ST_LUI: begin
           case (COUNTER)
             0: begin
+              PC_w = READ;
               Mux_ALUSrcB = 2'b10;
               ALUOp = LUI;
               COUNTER = COUNTER + 1;
