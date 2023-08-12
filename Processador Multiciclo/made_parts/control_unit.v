@@ -28,7 +28,8 @@ module control_unit (
     output reg LO_reg_w,
     output reg MEM_DATA_REG_w,
     output reg mult_control,
-    output reg mult_end,  // Entrada da UC
+    input wire mult_end,
+    output reg mult_reset,  // Entrada da UC
     output reg [1:0] LS_control,
     output reg [1:0] SS_control,
     output reg DivOp,
@@ -146,7 +147,7 @@ module control_unit (
         LO_reg_w = 1'b0;
         MEM_DATA_REG_w = 1'b0;
         mult_control = 1'b0;
-        mult_end = 1'b0;  // Entrada da UC
+        mult_reset = 1'b1;  // Entrada da UC
         LS_control = 2'b00;
         SS_control = 2'b00;
         DivOp = 1'b0;
@@ -182,7 +183,8 @@ module control_unit (
         LO_reg_w = 1'b0;
         MEM_DATA_REG_w = 1'b0;
         mult_control = 1'b0;
-        mult_end = 1'b0;  // Entrada da UC
+        // mult_end = 1'b0;  // Entrada da UC
+        mult_reset = 1'b1;
         LS_control = 2'b00;
         SS_control = 2'b00;
         DivOp = 1'b0;
@@ -221,7 +223,8 @@ module control_unit (
           LO_reg_w = 1'b0;
           MEM_DATA_REG_w = 1'b0;
           mult_control = 1'b0;
-          mult_end = 1'b0;  // Entrada da UC
+          // mult_end = 1'b0;  // Entrada da UC
+          mult_reset = 1'b1;
           LS_control = 2'b00;
           SS_control = 2'b00;
           DivOp = 1'b0;
@@ -251,7 +254,8 @@ module control_unit (
               LO_reg_w = 1'b0;
               MEM_DATA_REG_w = 1'b0;
               mult_control = 1'b0;
-              mult_end = 1'b0;  // Entrada da U = 0;
+              // mult_end = 1'b0;  // Entrada da U = 0;
+              mult_reset = 1'b1;
               LS_control = 2'b00;
               SS_control = 2'b00;
               DivOp = 1'b0;
@@ -514,6 +518,42 @@ module control_unit (
                       PC_w = READ;
                       COUNTER = 0;
                     end
+                  endcase
+                end
+                STR_MULT: begin // CONClUÍDO
+                  case (COUNTER)
+                        0: begin // Escrever em A e B
+                          A_reg_w = WRITE;
+                          B_reg_w = WRITE;
+                          COUNTER = COUNTER + 1;
+                          mult_reset = 1'b1;
+                        end
+                        1: begin // Inicia multiplicação
+                          mult_reset = 1'b0;
+                          mult_control = 1;
+                          COUNTER = COUNTER + 1;
+                        end
+                        2: begin // Espera 1 ciclo
+                          COUNTER = COUNTER + 1;
+                        end
+                        3: begin // Agora esperar até divisor done
+                          if (!mult_end) begin
+                            mult_control = 0;
+                            COUNTER = COUNTER + 1;
+                          end
+                        end
+                        4: begin // Escreve o resultado em HI e LO
+                          HI_reg_w = WRITE;
+                          LO_reg_w = WRITE;
+                          COUNTER = COUNTER + 1;
+                        end
+                        5: begin // Escrito
+                          HI_reg_w = READ;
+                          LO_reg_w = READ;
+                          mult_reset = 1'b1;
+                          COUNTER = 0;
+                          STATE = ST_PC_MAIS_4;
+                        end
                   endcase
                 end
                 STR_DIV: begin // CONClUÍDO
@@ -842,6 +882,7 @@ module control_unit (
             end
             3: begin
               COUNTER = 0;
+              Banco_reg_w = READ;
               STATE = ST_PC_MAIS_4;
             end
           endcase

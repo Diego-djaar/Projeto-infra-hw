@@ -299,9 +299,11 @@ module cpu(
         LO_in
     );
 
+    wire mult_reset;
+
     mult mult_(
         clk,
-        reset,
+        reset | mult_reset,
         A_out,
         B_out,
         mult_control,
@@ -402,6 +404,7 @@ module cpu(
         MEM_DATA_REG_w,
         mult_control,
         mult_end,
+        mult_reset,
         LS_control,
         SS_control,
         DivOp,
