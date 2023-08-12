@@ -274,7 +274,6 @@ module control_unit (
                 excessao = 2'b00;
                 Mux_MEM = 1'b0;
                 MEM_w = READ;
-                IR_w = WRITE;
                 Mux_ALUSrcA = 2'b00;
                 Mux_ALUSrcB = 2'b01;
                 ALUOp = ADD;  // O ADD do ALUcontrol
@@ -287,7 +286,11 @@ module control_unit (
             1: begin  // Estado vazio, lendo a memória
               COUNTER = COUNTER + 1;
             end
-            2: begin  // Segundo ciclo
+            2: begin
+              IR_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin  // Segundo ciclo
               // Ler instrução
               STATE   = opcode;
               STATE_R = funct;
