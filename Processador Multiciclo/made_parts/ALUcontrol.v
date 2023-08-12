@@ -94,7 +94,7 @@ module ALUcontrol(
                     ulaaux_control = 2'b00;
                 end
                 SHIFT_L1 : begin
-                    if (COUNTER == 1'b0) begin
+                    if (COUNTER == 0) begin
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
@@ -102,8 +102,10 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                    end else begin
+                    end else if (COUNTER == 1) begin // Operação
                         SHIFTER_control = 3'b010;
+                    end else begin // Nada
+                        SHIFTER_control = 3'b000;
                     end
                 end
                 SHIFT_L2 : begin // ALUaux
@@ -116,7 +118,7 @@ module ALUcontrol(
                     ulaaux_control = 2'b10;
                 end
                 SHIFT_R : begin
-                    if (COUNTER == 1'b0) begin
+                    if (COUNTER == 0) begin
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
@@ -124,12 +126,14 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                    end else begin
+                    end else if (COUNTER == 1) begin // Operação
                         SHIFTER_control = 3'b011;
+                    end else begin // Nada
+                        SHIFTER_control = 3'b000;
                     end
                 end
                 SHIFT_RA1 : begin
-                    if (COUNTER == 1'b0) begin
+                    if (COUNTER == 0) begin
                         ALU_control = 3'b000;
                         SHIFTER_control = 3'b001; // load no shifter
                         M_SHIFTER = 1'b0;
@@ -137,8 +141,10 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                    end else begin
+                    end else if (COUNTER == 1) begin // Operação
                         SHIFTER_control = 3'b100;
+                    end else begin // Nada
+                        SHIFTER_control = 3'b000;
                     end
                 end
                 SHIFT_RA2 : begin // ALUaux

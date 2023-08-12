@@ -392,27 +392,34 @@ module control_unit (
                 end
                 STR_SLL, STR_SRA, STR_SRL: begin
                     case (COUNTER)
-                        0: begin
+                        0: begin // Escrever em B
                             B_reg_w = WRITE;
                             COUNTER = COUNTER + 1;
                         end
-                        1: begin
+                        1: begin // Iniciar Operação
                             Mux_ALUSrcB = 2'b00;
+                            ALUCounter = 0;
                             ALUOp = STATE_R == STR_SLL ? SHIFT_L1 :
                                               STR_SRA ?  SHIFT_RA1:
                                               STR_SRL ? SHIFT_R : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
-                        2: begin
+                        2: begin // Esperar shifter operar
+                            ALUCounter = 1;
                             B_reg_w = READ;
+                            COUNTER = COUNTER + 1;
+                        end
+                        3: begin // Esperar shifter operar
+                            COUNTER = COUNTER + 1;
+                        end
+                        4: begin // Escrever
+                            ALUCounter = 2;
                             Mux_W_DT = 3'b000;
                             Banco_reg_w = WRITE;
                             COUNTER = COUNTER + 1;
                         end
-                        3: begin // Esperar escrever
-                            COUNTER = COUNTER + 1;
-                        end
-                        4: begin // Ir para pc mais 4
+                        5: begin // Ir para pc mais 4
+                            Banco_reg_w = READ;
                             COUNTER = 0;
                             STATE = ST_PC_MAIS_4;
                         end
@@ -846,7 +853,7 @@ module control_unit (
         end
         ST_LUI: begin
           case (COUNTER)
-            0: begin
+            0: begin // Iniciar Operação
               PC_w = READ;
               Mux_ALUSrcB = 2'b10;
               ALUOp = LUI;
@@ -860,13 +867,13 @@ module control_unit (
             2: begin // Esperar shifter operar
               COUNTER = COUNTER + 1;
             end
-            3: begin
+            3: begin // Escrever
               ALUCounter = 2;
               Mux_W_DT = 3'b000;
               Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
-            4: begin
+            4: begin // PC mais 4
               COUNTER = 0;
               Banco_reg_w = READ;
               STATE = ST_PC_MAIS_4;
