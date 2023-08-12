@@ -872,15 +872,18 @@ module control_unit (
             1: begin // Esperar shifter operar
               COUNTER = COUNTER + 1;
             end
-            2: begin
+            2: begin // Esperar shifter operar
+              COUNTER = COUNTER + 1;
+            end
+            3: begin
               Mux_W_DT = 3'b000;
               Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
-            2: begin // Esperar pra escrever no RB
+            4: begin // Esperar pra escrever no RB
               COUNTER = COUNTER + 1;
             end
-            3: begin
+            5: begin
               COUNTER = 0;
               Banco_reg_w = READ;
               STATE = ST_PC_MAIS_4;
