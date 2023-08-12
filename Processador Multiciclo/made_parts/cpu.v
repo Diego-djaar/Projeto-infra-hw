@@ -103,7 +103,7 @@ module cpu(
 
     Registrador PC_(
         clk,
-        reset,
+        reset || RESET_OUT,
         PC_w,
         Mux_PC_out,
         PC_out
@@ -111,7 +111,7 @@ module cpu(
 
     registrador EPC_(
         clk,
-        reset,
+        reset || RESET_OUT,
         EPC_w,
         ALU_REG_out,
         EPC_out
@@ -150,7 +150,7 @@ module cpu(
 
     Instr_Reg IR_(
         clk,
-        reset,
+        reset || RESET_OUT,
         IR_w,
         MEM_out,
         OPCODE,
@@ -180,7 +180,7 @@ module cpu(
 
     Banco_reg REG_BASE_(
         clk,
-        reset,
+        reset || RESET_OUT,
         RB_w,
         RS,
         RT,
@@ -192,7 +192,7 @@ module cpu(
 
     Registrador A_(
         clk,
-        reset,
+        reset || RESET_OUT,
         A_w,
         RB_to_A,
         A_out
@@ -200,7 +200,7 @@ module cpu(
 
     Registrador B_(
         clk,
-        reset,
+        reset || RESET_OUT,
         B_w,
         RB_to_B,
         B_out
@@ -208,7 +208,7 @@ module cpu(
 
     Registrador HI_(
         clk,
-        reset,
+        reset || RESET_OUT,
         HI_w,
         HI_in,
         HI_out
@@ -216,7 +216,7 @@ module cpu(
 
     Registrador LO_(
         clk,
-        reset,
+        reset || RESET_OUT,
         LO_w,
         LO_in,
         LO_out
@@ -255,13 +255,16 @@ module cpu(
         ALUSrcB
     );
 
+    wire [1:0] ALUCounter;
+
     logic_unit logic_unit_(
         clk,
-        reset,
+        reset || RESET_OUT,
         ALUSrcA,
         ALUSrcB,
         OFFSET[15:11], // SHAMT
         ALUOp, // 4 bits
+        ALUCounter,
         SPECIAL,
         exc_overflow,
         ZERO,
@@ -271,7 +274,7 @@ module cpu(
 
     Registrador ALUOutreg_(
         clk,
-        reset,
+        reset || RESET_OUT,
         ALUOut_w,
         ALUOut,
         ALU_REG_out
@@ -279,21 +282,21 @@ module cpu(
 
     Registrador MEM_DATA_REG_(
         clk,
-        reset,
+        reset || RESET_OUT,
         MEM_DATA_REG_w,
         MEM_out,
         MEM_DATA_REG_out
     );
 
     mux2to1 div_mult_hi_(
-        DivOp | (DivmOp!=0),
+        DivOp || (DivmOp!=0),
         HI_in_mult,
         HI_in_div,
         HI_in
     );
 
     mux2to1 div_mult_lo_(
-        DivOp | (DivmOp!=0),
+        DivOp || (DivmOp!=0),
         LO_in_mult,
         LO_in_div,
         LO_in
@@ -303,7 +306,7 @@ module cpu(
 
     mult mult_(
         clk,
-        reset | mult_reset,
+        reset || mult_reset || RESET_OUT,
         A_out,
         B_out,
         mult_control,
@@ -351,7 +354,7 @@ module cpu(
 
     div divisor_(
         clk,
-        reset | div_reset,
+        reset || RESET_OUT || div_reset,
         DivOp,
         Div_a,
         Div_b,
@@ -364,7 +367,7 @@ module cpu(
 
     Divm_special_handler divm_sh_(
         clk,
-        reset,
+        reset || RESET_OUT,
         MEM_out,
         A_out,
         B_out,
@@ -410,6 +413,7 @@ module cpu(
         DivOp,
         div_reset,
         DivmOp,
-        ALUOp
+        ALUOp,
+        ALUCounter
     );
 endmodule

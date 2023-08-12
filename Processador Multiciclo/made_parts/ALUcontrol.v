@@ -2,6 +2,7 @@ module ALUcontrol(
     input wire clk,
     input wire reset,
     input wire [3:0] ALUOp,
+    input wire [1:0] COUNTER,
     output reg [2:0] ALU_control,
     output reg [2:0] SHIFTER_control,
     output reg M_SHIFTER,
@@ -12,6 +13,7 @@ module ALUcontrol(
 );
     // Com excessão das operações de shift, todas as operações são feitas em um ciclo
     // Portanto, é necessário criar o reg STATE, que só vai ser alterado se o COUNTER for 0 (significa que não estã no meio de nenhuma op)
+    // MUDADO: isso já é levado em consideração na control unit e ta causando bug
     reg [3:0] STATE;
 
     // Operações
@@ -32,13 +34,9 @@ module ALUcontrol(
     parameter BGT = 4'b1110;
     parameter LUI = 4'b1111;
 
-    reg COUNTER = 1'b0; // Conta até um ciclo pra as operações de shift (que precisam primeiro do primeiro ciclo pro LOAD)
-
     always @(posedge clk) begin
         
-        if (COUNTER == 1'b0) begin
-            STATE = ALUOp;
-        end
+        STATE = ALUOp;
 
         if (reset == 1'b1) begin
             ALU_control = 3'b000;
@@ -104,10 +102,8 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                        COUNTER = 1'b1;
                     end else begin
                         SHIFTER_control = 3'b010;
-                        COUNTER = 1'b0;
                     end
                 end
                 SHIFT_L2 : begin // ALUaux
@@ -128,10 +124,8 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                        COUNTER = 1'b1;
                     end else begin
                         SHIFTER_control = 3'b011;
-                        COUNTER = 1'b0;
                     end
                 end
                 SHIFT_RA1 : begin
@@ -143,10 +137,8 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                        COUNTER = 1'b1;
                     end else begin
                         SHIFTER_control = 3'b100;
-                        COUNTER = 1'b0;
                     end
                 end
                 SHIFT_RA2 : begin // ALUaux
@@ -205,7 +197,7 @@ module ALUcontrol(
                     ulaaux_control = 2'b00;
                 end
                 LUI : begin
-                    if (COUNTER == 1'b0) begin
+                    if (COUNTER == 0) begin
                         ALU_control = 3'b000;
                         M_SHIFTER = 1'b1;
                         SHIFTER_control = 3'b001; // load no shifter
@@ -213,10 +205,10 @@ module ALUcontrol(
                         UC_control = 1'b0;
                         UC_op = 2'b00;
                         ulaaux_control = 2'b00;
-                        COUNTER = 1'b1;
-                    end else begin
+                    end else if (COUNTER == 1) begin // Operação
                         SHIFTER_control = 3'b010;
-                        COUNTER = 1'b0;
+                    end else begin // Nada
+                        SHIFTER_control = 3'b000;
                     end
                 end
             endcase

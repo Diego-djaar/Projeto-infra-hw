@@ -35,7 +35,8 @@ module control_unit (
     output reg DivOp,
     output reg DivReset,
     output reg [2:0] DivmOp,
-    output reg [3:0] ALUOp
+    output reg [3:0] ALUOp,
+    output reg [1:0] ALUCounter
 );
   // Excessão
   reg ignorar_exc;
@@ -99,7 +100,13 @@ module control_unit (
   initial begin
     // Initial reset executado na máquina
     reset_out = 1'b1;
+    @(posedge clk);
+    @(posedge clk);
+    @(posedge clk);
+    reset_out = 1'b0;
   end
+
+  always @(negedge reset_in) reset_out = reset_in;
 
   // Operações do ALUcontrol
     parameter NO_OP = 4'b0000; // equivalente a PASS_A
@@ -120,81 +127,42 @@ module control_unit (
     parameter LUI = 4'b1111;
 
   always @(posedge clk) begin
-    if (reset_in) begin  // Se reset for pressionado
-      if (STATE != ST_RESET) begin
-        STATE = ST_RESET;
-        // Resetando todos os sinais
-        exc_opcode = 1'b0;
-        excessao = 2'b00;
-        ignorar_exc = 1'b0;
-        PC_w = 1'b0;
-        PC_w_cond = 1'b0;
-        EPC_w = 1'b0;
-        MEM_w = 1'b0;
-        IR_w = 1'b0;
-        Mux_W_RB = 2'b00;
-        Mux_W_DT = 3'b000;
-        Mux_MEM = 2'b00;
-        Mux_PC = 3'b000;
-        Mux_ALUSrcA = 2'b00;
-        Mux_ALUSrcB = 2'b00;
-        Mux_EXC = 2'b00;
-        ALUOut_w = 1'b0;
-        Banco_reg_w = 1'b0;
-        A_reg_w = 1'b0;
-        B_reg_w = 1'b0;
-        HI_reg_w = 1'b0;
-        LO_reg_w = 1'b0;
-        MEM_DATA_REG_w = 1'b0;
-        mult_control = 1'b0;
-        mult_reset = 1'b1;  // Entrada da UC
-        LS_control = 2'b00;
-        SS_control = 2'b00;
-        DivOp = 1'b0;
-        DivReset = 1'b1;
-        DivmOp = 3'b000;
-        ALUOp = 4'b0000;
-        reset_out = 1'b1;
-        // Resetando o contador para 0
-        COUNTER = 4'b0000;
-      end else begin
-        STATE = ST_PC_MAIS_4;
-        // Resetando todos os sinais
-        exc_opcode = 1'b0;
-        excessao = 2'b00;
-        ignorar_exc = 1'b0;
-        PC_w = 1'b0;
-        PC_w_cond = 1'b0;
-        EPC_w = 1'b0;
-        MEM_w = 1'b0;
-        IR_w = 1'b0;
-        Mux_W_RB = 2'b00;
-        Mux_W_DT = 3'b000;
-        Mux_MEM = 2'b00;
-        Mux_PC = 3'b000;
-        Mux_ALUSrcA = 2'b00;
-        Mux_ALUSrcB = 2'b00;
-        Mux_EXC = 2'b00;
-        ALUOut_w = 1'b0;
-        Banco_reg_w = 1'b0;
-        A_reg_w = 1'b0;
-        B_reg_w = 1'b0;
-        HI_reg_w = 1'b0;
-        LO_reg_w = 1'b0;
-        MEM_DATA_REG_w = 1'b0;
-        mult_control = 1'b0;
-        // mult_end = 1'b0;  // Entrada da UC
-        mult_reset = 1'b1;
-        LS_control = 2'b00;
-        SS_control = 2'b00;
-        DivOp = 1'b0;
-        DivReset = 1'b1;
-        DivmOp = 3'b000;
-        ALUOp = 4'b0000;
-        reset_out = 1'b0;
-        // Resetando o contador para 0
-        COUNTER = 4'b0000;
-      end
+    if (reset_in) reset_out = reset_in;
+    if (reset_out) begin  // Se reset for pressionado
+      STATE = ST_RESET;
+      // Resetando todos os sinais
+      exc_opcode = 1'b0;
+      excessao = 2'b00;
+      ignorar_exc = 1'b0;
+      PC_w = 1'b0;
+      PC_w_cond = 1'b0;
+      EPC_w = 1'b0;
+      MEM_w = 1'b0;
+      IR_w = 1'b0;
+      Mux_W_RB = 2'b00;
+      Mux_W_DT = 3'b000;
+      Mux_MEM = 2'b00;
+      Mux_PC = 3'b000;
+      Mux_ALUSrcA = 2'b00;
+      Mux_ALUSrcB = 2'b00;
+      Mux_EXC = 2'b00;
+      ALUOut_w = 1'b0;
+      Banco_reg_w = 1'b0;
+      A_reg_w = 1'b0;
+      B_reg_w = 1'b0;
+      HI_reg_w = 1'b0;
+      LO_reg_w = 1'b0;
+      MEM_DATA_REG_w = 1'b0;
+      mult_control = 1'b0;
+      mult_reset = 1'b1;  // Entrada da UC
+      LS_control = 2'b00;
+      SS_control = 2'b00;
+      DivOp = 1'b0;
+      DivReset = 1'b1;
+      DivmOp = 3'b000;
+      ALUOp = 4'b0000;
+      // Resetando o contador para 0
+      COUNTER = 4'b0000;
     end else begin
       case (STATE)
         ST_RESET: begin
@@ -272,8 +240,9 @@ module control_unit (
                 // PC + 4
                 ignorar_exc = 1'b0;
                 excessao = 2'b00;
-                Mux_MEM = 1'b0;
+                Mux_MEM = 2'b00;
                 MEM_w = READ;
+                IR_w = READ;
                 Mux_ALUSrcA = 2'b00;
                 Mux_ALUSrcB = 2'b01;
                 ALUOp = ADD;  // O ADD do ALUcontrol
@@ -283,14 +252,17 @@ module control_unit (
                 COUNTER = COUNTER + 1;
               end
             end
-            1: begin  // Estado vazio, lendo a memória
+            1: begin  // Ler memória
               COUNTER = COUNTER + 1;
             end
-            2: begin
+            2: begin  // Escrever em IR
               IR_w = WRITE;
               COUNTER = COUNTER + 1;
             end
-            3: begin  // Segundo ciclo
+            3: begin  // Esperar escrever
+              COUNTER = COUNTER + 1;
+            end
+            4: begin  // Segundo ciclo
               // Ler instrução
               STATE   = opcode;
               STATE_R = funct;
@@ -346,6 +318,8 @@ module control_unit (
               IR_w = READ;
               PC_w = WRITE;
               COUNTER = 0;
+              @(posedge clk); // Delay para escrever no PC
+              PC_w = READ;
             end
           endcase
         end
@@ -876,23 +850,23 @@ module control_unit (
               PC_w = READ;
               Mux_ALUSrcB = 2'b10;
               ALUOp = LUI;
+              ALUCounter = 0;
               COUNTER = COUNTER + 1;
             end
             1: begin // Esperar shifter operar
+              ALUCounter = 1;
               COUNTER = COUNTER + 1;
             end
             2: begin // Esperar shifter operar
               COUNTER = COUNTER + 1;
             end
             3: begin
+              ALUCounter = 2;
               Mux_W_DT = 3'b000;
               Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
-            4: begin // Esperar pra escrever no RB
-              COUNTER = COUNTER + 1;
-            end
-            5: begin
+            4: begin
               COUNTER = 0;
               Banco_reg_w = READ;
               STATE = ST_PC_MAIS_4;
