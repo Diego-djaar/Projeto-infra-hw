@@ -262,7 +262,7 @@ module cpu(
         reset || RESET_OUT,
         ALUSrcA,
         ALUSrcB,
-        OFFSET[15:11], // SHAMT
+        OFFSET[10:6], // SHAMT
         ALUOp, // 4 bits
         ALUCounter,
         SPECIAL,
