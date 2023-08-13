@@ -402,8 +402,8 @@ module control_unit (
                             Mux_ALUSrcB = 2'b00;
                             ALUCounter = 0;
                             ALUOp = STATE_R == STR_SLL ? SHIFT_L1 :
-                                              STR_SRA ?  SHIFT_RA1:
-                                              STR_SRL ? SHIFT_R : 4'b0000;
+                                            STATE_R == STR_SRA ? SHIFT_RA1:
+                                            STATE_R == STR_SRL ? SHIFT_R : 4'b0000;
                             COUNTER = COUNTER + 1;
                         end
                         2: begin // Esperar shifter operar
@@ -720,9 +720,9 @@ module control_unit (
               Mux_ALUSrcA = 2'b01;
               Mux_ALUSrcB = 2'b00;
               ALUOp = STATE == ST_BEQ ? BEQ:
-                               ST_BNE ? BNE:
-                               ST_BGT ? BGT:
-                               ST_BLE ? BLE: 4'b0000;
+                              STATE == ST_BNE ? BNE:
+                               STATE == ST_BGT ? BGT:
+                               STATE == ST_BLE ? BLE: 4'b0000;
               COUNTER = COUNTER + 1;
               end
             2: begin
@@ -756,6 +756,7 @@ module control_unit (
               A_reg_w = WRITE;
               COUNTER = COUNTER + 1;
               PC_w = READ;
+              Mux_W_DT = 3'b010;
             end
             1: begin
               A_reg_w = READ;
