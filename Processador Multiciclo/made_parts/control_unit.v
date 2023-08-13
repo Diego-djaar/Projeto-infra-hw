@@ -720,9 +720,9 @@ module control_unit (
               Mux_ALUSrcA = 2'b01;
               Mux_ALUSrcB = 2'b00;
               ALUOp = STATE == ST_BEQ ? BEQ:
-                              STATE == ST_BNE ? BNE:
-                               STATE == ST_BGT ? BGT:
-                               STATE == ST_BLE ? BLE: 4'b0000;
+                      STATE == ST_BNE ? BNE:
+                      STATE == ST_BGT ? BGT:
+                      STATE == ST_BLE ? BLE: 4'b0000;
               COUNTER = COUNTER + 1;
               end
             2: begin
@@ -744,7 +744,11 @@ module control_unit (
               PC_w = WRITE;
               COUNTER = COUNTER + 1;
             end
-            4: begin
+            4: begin // Esperar escrever no PC
+              COUNTER = COUNTER + 1;
+            end
+            5: begin
+              PC_w = READ;
               COUNTER = 0;
               STATE = ST_PC_MAIS_4;
             end

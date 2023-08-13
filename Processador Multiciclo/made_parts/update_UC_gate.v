@@ -10,7 +10,7 @@ module update_UC_gate(
             update_UC_out = 1'b0;
         end
         
-        always @(*)
+        always @(UC_control)
         begin
             update_UC_out = 1'b0;
             if (UC_control == 1'b1) begin
