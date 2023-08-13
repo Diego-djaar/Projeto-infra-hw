@@ -56,6 +56,7 @@ module control_unit (
   parameter ST_RESET = 6'h3E;
   parameter ST_WAIT_MEM = 6'h3D;
   parameter ST_EXC = 6'h3C;
+  parameter ST_NULL = 6'h3B;
   // Opcodes e functs
   parameter ST_R = 6'h0;
   parameter STR_ADD = 6'h20;
@@ -264,7 +265,8 @@ module control_unit (
             end
             4: begin  // Segundo ciclo
               // Ler instrução
-              STATE   = opcode;
+              if (opcode != ST_PC_MAIS_4 && opcode != ST_RESET && opcode != ST_WAIT_MEM && opcode != ST_EXC) STATE = opcode;
+              else STATE = ST_NULL;
               STATE_R = funct;
 
               // Algumas instruções requerem algo aqui
