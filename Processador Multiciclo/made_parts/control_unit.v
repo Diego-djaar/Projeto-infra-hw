@@ -756,7 +756,7 @@ module control_unit (
               A_reg_w = WRITE;
               COUNTER = COUNTER + 1;
               PC_w = READ;
-              Mux_W_DT = 3'b010;
+              Mux_W_DT = 3'b001;
             end
             1: begin
               A_reg_w = READ;
@@ -789,7 +789,6 @@ module control_unit (
             end
             6: begin
               MEM_DATA_REG_w = READ;
-              Mux_W_RB = 2'b01;
               Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
