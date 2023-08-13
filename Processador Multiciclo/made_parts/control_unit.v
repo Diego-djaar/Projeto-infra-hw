@@ -947,6 +947,62 @@ module control_unit (
             end
           endcase
         end
+        ST_ADDM: begin
+            case (COUNTER)
+            0: begin
+              A_reg_w = WRITE;
+              B_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+              PC_w = READ;
+              Mux_W_DT = 3'b000;
+            end
+            1: begin
+              A_reg_w = READ;
+              Mux_ALUSrcA = 2'b01;
+              Mux_ALUSrcB = 2'b10;
+              ALUOp = ADD;
+              ALUOut_w = WRITE;
+              COUNTER = COUNTER + 1;
+              end
+            2: begin
+              ALUOut_w = READ;
+              A_reg_w = READ;
+              B_reg_w = READ;
+              Mux_MEM = 2'b01;
+              MEM_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            3: begin // Espera pra ler
+              ALUOut_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            4: begin // Espera pra ler
+              MEM_DATA_REG_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            5: begin
+              Mux_ALUSrcA = 2'b10;
+              Mux_ALUSrcB = 2'b00;
+              ALUOp = ADD;
+              ALUOut_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            6: begin
+              MEM_DATA_REG_w = READ;
+              Banco_reg_w = WRITE;
+              COUNTER = COUNTER + 1;
+            end
+            7: begin // Esperar para escrever no RB
+              ALUOut_w = READ;
+              COUNTER = COUNTER + 1;
+            end
+            8: begin
+              Banco_reg_w = READ;
+              COUNTER = 0;
+              STATE = ST_WAIT_MEM;
+            end
+            endcase
+          end
         default: begin // Opcode inexistente
           COUNTER = 0;
           STATE = ST_EXC;
