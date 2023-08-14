@@ -23,7 +23,6 @@ module logic_unit(
 
     // Data wires
     wire [31:0] ALUResult; // Saída da ULA
-    wire Of;
     wire Ng;
     wire Zr;
     wire Eq;
@@ -83,6 +82,7 @@ module logic_unit(
     update_UC_gate update_UC_(
         Eq,
         Gt,
+        Lt,
         UC_control,
         UC_op,
         Update_UC
