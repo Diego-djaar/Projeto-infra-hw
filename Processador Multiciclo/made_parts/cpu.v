@@ -226,7 +226,7 @@ module cpu(
         Mux_ALUSrcA,
         PC_out,
         A_out,
-        extend2_out, // Bit menos significativo da memória
+        MEM_out, // Word da memória
         ALUSrcA
     );
 

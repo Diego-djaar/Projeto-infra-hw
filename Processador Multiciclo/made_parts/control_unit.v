@@ -959,6 +959,7 @@ module control_unit (
               COUNTER = COUNTER + 1;
               PC_w = READ;
               Mux_W_DT = 3'b000;
+              Mux_W_RB = 2'b00;
             end
             1: begin
               A_reg_w = READ;
@@ -977,14 +978,14 @@ module control_unit (
               COUNTER = COUNTER + 1;
             end
             3: begin // Espera pra ler
-              ALUOut_w = READ;
               COUNTER = COUNTER + 1;
             end
-            4: begin // Espera pra ler
+            4: begin // Escrever no registrador
               MEM_DATA_REG_w = WRITE;
               COUNTER = COUNTER + 1;
             end
             5: begin
+              MEM_DATA_REG_w = READ;
               Mux_ALUSrcA = 2'b10;
               Mux_ALUSrcB = 2'b00;
               ALUOp = ADD;
@@ -992,12 +993,11 @@ module control_unit (
               COUNTER = COUNTER + 1;
             end
             6: begin
-              MEM_DATA_REG_w = READ;
+              ALUOut_w = READ;
               Banco_reg_w = WRITE;
               COUNTER = COUNTER + 1;
             end
             7: begin // Esperar para escrever no RB
-              ALUOut_w = READ;
               COUNTER = COUNTER + 1;
             end
             8: begin
